@@ -6,4 +6,11 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  server: {
+    host: true, // permite conexiones externas (no solo localhost)
+    port: 5173,
+    strictPort: true, // lanza error si el puerto está en uso
+    cors: true, // habilita CORS
+    allowedHosts: ['.ngrok-free.app'], // permite conexiones desde dominios específicos
+  },
 })

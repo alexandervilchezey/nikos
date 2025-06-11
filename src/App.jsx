@@ -2,13 +2,13 @@
 import './App.css'
 import Banner from './components/Banner'
 import Header from './components/Header'
-// import ProductList from './components/ProductList'
+import ProductsCarousel from './components/ProductsCarousel'
 function App() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative" style={{ minHeight: '100dvh' }}>
       <Header />
-      <Banner/>
-      {/* <ProductList /> */}
+      <Banner />
+      <ProductsCarousel />
     </div>
   )
 }
