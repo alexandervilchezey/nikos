@@ -2,12 +2,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
-import banner1 from '../assets/images/banner-1.png';
-import banner1small from '../assets/images/banner1_small.png';
-import banner2 from '../assets/images/banner-2.png';
-import banner2small from '../assets/images/banner2_small.png';
-import banner4 from '../assets/images/banner-4.png';
-import banner4small from '../assets/images/banner4_small.png';
+import banner1 from '../../assets/images/banner-1.png';
+import banner1small from '../../assets/images/banner1_small.png';
+import banner2 from '../../assets/images/banner-2.png';
+import banner2small from '../../assets/images/banner2_small.png';
+import banner4 from '../../assets/images/banner-4.png';
+import banner4small from '../../assets/images/banner4_small.png';
 import { useState, useEffect } from 'react';
 
 export default function Banner() {

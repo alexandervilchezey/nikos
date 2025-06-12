@@ -1,14 +1,17 @@
-// src/App.jsx
 import './App.css'
-import Banner from './components/Banner'
-import Header from './components/Header'
-import ProductsCarousel from './components/ProductsCarousel'
+import { Routes, Route } from 'react-router-dom';
+import Layout from './pages/Layout'
+import Home from './pages/Home'
+import Products from './pages/Products';
 function App() {
   return (
     <div className="relative" style={{ minHeight: '100dvh' }}>
-      <Header />
-      <Banner />
-      <ProductsCarousel />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="productos" element={<Products />} />
+        </Route>
+      </Routes>
     </div>
   )
 }

@@ -12,47 +12,47 @@ export const marcasZapatos = [
     {
         id: "M0001",
         nombre: "NIKE",
-        image:[marca_nike]
+        image:marca_nike
     },
     {
         id: "M0002",
         nombre: "PUMA",
-        image:[marca_puma]
+        image:marca_puma
     },
     {
         id: "M0003",
         nombre: "JORDAN",
-        image:[marca_jordan]
+        image:marca_jordan
     },
     {
         id: "M0004",
         nombre: "VANS",
-        image:[marca_vans]
+        image:marca_vans
     },
     {
         id: "M0005",
         nombre: "PIERRE CARDIN",
-        image:[marca_pierrecardin]
+        image:marca_pierrecardin
     },
     {
         id: "M0006",
         nombre: "TIMBERLAND",
-        image:[marca_timberland]
+        image:marca_timberland
     },
     {
         id: "M0007",
         nombre: "ADIDAS",
-        image:[marca_adidas]
+        image:marca_adidas
     },
     {
         id: "M0008",
         nombre: "CONVERSE",
-        image:[marca_converse]
+        image:marca_converse
     },
     {
         id: "M0009",
         nombre: "CROCS",
-        image:[marca_crocs]
+        image:marca_crocs
     },
 ]
 

@@ -1,4 +1,4 @@
-import ProductItem from './ProductItem';
+import ProductItem from '../reusable/ProductItem.jsx';
 import dataProductos from '../../utils/dataProductos.js';
 import {marcasZapatos, usuarioGeneral, tipoCalzado} from '../../utils/dataGeneral.js';
 

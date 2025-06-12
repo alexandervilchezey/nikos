@@ -14,8 +14,8 @@ export default function HeaderCenter({ isBigSubmenuOpen, setIsBigSubMenuOpen }) 
           </li>
         </ul>
         <ul className="list-none">
-          <li><a className='link-menu' href="/about">Nosotros</a></li>
-          <li><a className='link-menu' href="/contact">Contacto</a></li>
+          <li><a className='link-menu' href="#marcas">Marcas</a></li>
+          <li><a className='link-menu' href="#contacto">Contacto</a></li>
         </ul>
       </nav>
       <div className='logoNikos'><a href="">Nikos</a></div>

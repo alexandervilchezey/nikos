@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import HeaderLeft from './header/HeaderLeft';
-import HeaderCenter from './header/HeaderCenter';
-import HeaderRight from './header/HeaderRight';
-import SearchFloat from './header/SearchFloat';
-import Overlay from './header/Overlay';
-import MobileMenu from './header/MobileMenu';
+import HeaderLeft from '../header/HeaderLeft';
+import HeaderCenter from '../header/HeaderCenter';
+import HeaderRight from '../header/HeaderRight';
+import SearchFloat from '../header/SearchFloat';
+import Overlay from '../header/Overlay';
+import MobileMenu from '../header/MobileMenu';
 
 export default function Header() {
   const [isBigSubmenuOpen, setIsBigSubMenuOpen] = useState(false);

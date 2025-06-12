@@ -45,11 +45,11 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
                   </ul>
                 </div>
               </li>
-              <li><a href=""><span>Nosotros</span></a></li>
-              <li><a href=""><span>Contacto</span></a></li>
+              <li><a href="#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
+              <li><a href="#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
             </ul>
           </nav>
-          <div className="button">
+          <div className="button mt-auto">
             <a href="" className="btn secondary-btn">Iniciar Sesion</a>
             <a href="" className="btn primary-btn">Registrarse</a>
           </div>

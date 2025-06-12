@@ -3,9 +3,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import dataProductos from '../utils/dataProductos.js';
-
-import ProductItem from './header/ProductItem';
+import dataProductos from '../../utils/dataProductos.js';
+import ProductItem from '../reusable/ProductItem.jsx';
 import { useRef, useState } from 'react';
 
 export default function ProductsCarousel() {
@@ -25,7 +24,7 @@ export default function ProductsCarousel() {
     setAtEnd(swiper.isEnd);
     };
   return (
-    <div className='products-carousel shadow'>
+    <div className='products-carousel'>
         <div className="wrap">
             <div className="mt-5 md:mt-0 heading">
                 <h2 className="title">Nuevos ingresos</h2>
