@@ -34,6 +34,18 @@
   --fadeCategory: fade-bottom .9s cubic-bezier(0.39, 0.575, .0565, 1) both;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 %logo-nikos{
   font-family: 'Anton', sans-serif;
   text-transform: uppercase;
@@ -811,9 +823,7 @@ nav.menu :where(.sub-mega){
 .breadcrumb{
   width: 100%;
   line-height: initial;
-  padding: 30px 0 50px;
   ul{
-    justify-content: center;
     li{
       position: relative;
       margin-right: 10px;
@@ -845,6 +855,178 @@ nav.menu :where(.sub-mega){
     }
   }
 }
+
+/*----------------------------------*/
+/*-------- Product Summary ---------*/
+/*----------------------------------*/
+.summary{
+  margin: 0 5px;
+  .entry{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    .title{
+      font-size: clamp(25px, -0.875em + 8.33vw, var(--fs-max, 30px));
+    }
+  }
+  .product-grow{
+    display: flex;
+    justify-content: space-between;
+    .product-price{
+      display: flex;
+      align-items: center;
+      .current{
+        font-size: 30px;
+      }
+      .wrap{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding-left: 30px;
+        &::before{
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 12px;
+          height: 100%;
+          width: 1px;
+          background-color: var(--grey-color);
+          transform: skewX(-25deg);
+        }
+        .before{
+          color: var(--light-color);
+          text-decoration-line: line-through;
+        }
+        .discount{
+          display: inline-block;
+          width: 44px;
+          font-size: var(--fs14);
+          padding: 5px;
+          background-color: var(--primary-color);
+          color: var(--white-color);
+          margin-left: -10px;
+          text-align: center;
+          border-radius: 5px;
+          line-height: 1;
+        }
+      }
+    }
+    .product-rating{
+      line-height: initial;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      a{
+        font-size: var(--fs14);
+        padding-left: 10px;
+        color: var(--grey-color);
+        text-decoration: dotted;
+        text-decoration-line: underline;
+        white-space: nowrap;
+        transition: var(--transition-color);
+        &:hover{
+          color: var(--dark-color);
+        }
+      }
+    }
+  }
+  .product-color{
+    button{
+      border-radius: 50%;
+      transition: box-shadow 0.3s;
+      position: relative;
+      &.tosca{
+        background-color: #ff4757;
+      }
+      &.brown{
+        background-color: #653f42;
+      }
+      &.ocean{
+        background-color: #2bcbba;
+      }
+      &.selected{
+        box-shadow: inset 0 0 0 4px var(--white-color);
+        // box-shadow: 0 0 0 4px black;
+      }
+    }
+  }
+  .product-size{
+    button{
+      position: relative;
+      transition: box-shadow 0.3s;
+      &.selected{
+        box-shadow: 0 0 0 2px black;
+      }
+      &.no-size{
+        background-color: #eee;
+        color: #999;
+        opacity: 0.6;
+        cursor: not-allowed;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 2px;
+          background-color: rgba(0, 0, 0, 0.4);
+          top: 50%;
+          left: 0;
+          transform: rotate(-45deg);
+          transform-origin: center;
+        }
+      }
+    }
+  }
+  .product-action{
+    display: flex;
+    gap: 10px;
+    justify-content: left;
+    align-items: flex-start;
+    input{
+      width: 50px;
+      border: 1px solid;
+      text-align: center;
+    }
+  }
+  .product-control{
+    ul{
+      display: flex;
+      align-items: center;
+      flex-flow: wrap;
+      gap: 20px;
+      a{
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0;
+        span{
+          font-size: var(--fs14);
+        }
+      }
+    }
+  }
+  .wrap{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    button{
+      height: 40px;
+      width: 40px;
+      background-color: #f1f1f1;
+    }
+  }
+  button{
+    border-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+}
+
 
 @media (min-width: 640px) {
   .swiper-pagination {

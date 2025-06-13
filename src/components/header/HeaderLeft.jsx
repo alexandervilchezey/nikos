@@ -13,6 +13,7 @@ export default function HeaderLeft({ setIsMobileMenuOpen }) {
               <i className='bx bx-user'></i>
             </a>
           </li>
+          <li className="px-5"></li>
         </ul>
       </div>
     </div>

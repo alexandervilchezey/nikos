@@ -1,4 +1,8 @@
-export default function ProductItem({ producto }) {
+import { useNavigate } from "react-router-dom";
+
+export default function ProductItem({ producto, onClose }) {
+  const navigate = useNavigate();
+
   if (!producto) return null;
   const {
     nombre,
@@ -7,6 +11,11 @@ export default function ProductItem({ producto }) {
     imagenesHover,
   } = producto;
 
+  const handleClick = () => {
+    navigate(`/productos/${producto.slug}`);
+    if (onClose) onClose();
+  };
+
   const calcularPrecioOriginal = (precio, descuento) => {
     return (precio / (1 - descuento / 100)).toFixed(2);
   };
@@ -14,7 +23,9 @@ export default function ProductItem({ producto }) {
   const precioOriginal = calcularPrecioOriginal(precio, descuento);
 
   return (
-    <div className="item">
+    <div className="item"
+      onClick={handleClick}
+    >
       <div className="dot-images">
         <a href="#" className="product-permalink"></a>
         <div className="thumbnail">

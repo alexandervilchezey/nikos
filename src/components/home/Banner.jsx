@@ -41,7 +41,7 @@ const ResponsiveSlideImage = ({ image }) => {
 }
 
   return (
-    <main>
+    <main id='#banner'>
       <div className="slider">
         <div className="sliderbox">
           <div className="wrap">

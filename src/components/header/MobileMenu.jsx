@@ -1,9 +1,23 @@
 import { tipoCalzado, usuarioGeneral, marcasZapatos } from "../../utils/dataGeneral";
+import { useEffect } from "react";
 
 export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSubmenuOpen, setIsSubMenuOpen }) {
   const marcasDestacadas = marcasZapatos.slice(0, 5);
   const tiposDestacados = tipoCalzado.slice(0, 4);
   const usuariosDestacados = usuarioGeneral.slice(0, 4);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // Limpieza por si acaso
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isMobileMenuOpen]);
   
   return (
     <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
@@ -14,7 +28,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
         <div className="main-menu scrollto">
           <nav className='wrapper'>
             <ul>
-              <li><a href=""><span>Inicio</span></a></li>
+              <li><a href="/#banner"><span>Inicio</span></a></li>
               <li className='has-child'>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsSubMenuOpen(!isSubmenuOpen); }}>
                   <span>Productos</span>
@@ -45,8 +59,8 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
                   </ul>
                 </div>
               </li>
-              <li><a href="#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
-              <li><a href="#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
+              <li><a href="/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
+              <li><a href="/#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
             </ul>
           </nav>
           <div className="button mt-auto">

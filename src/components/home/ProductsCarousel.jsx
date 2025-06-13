@@ -23,6 +23,7 @@ export default function ProductsCarousel() {
     setAtBeginning(swiper.isBeginning);
     setAtEnd(swiper.isEnd);
     };
+
   return (
     <div className='products-carousel'>
         <div className="wrap">

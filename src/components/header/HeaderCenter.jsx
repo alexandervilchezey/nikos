@@ -10,7 +10,7 @@ export default function HeaderCenter({ isBigSubmenuOpen, setIsBigSubMenuOpen }) 
             <a href="#" className="link-menu" onClick={(e) => { e.preventDefault(); setIsBigSubMenuOpen(!isBigSubmenuOpen); }}>
               Productos <i className='bx bx-caret-down'></i>
             </a>
-            {isBigSubmenuOpen && <MegaSubMenu />}
+            {isBigSubmenuOpen && <MegaSubMenu onClose={() => {setIsBigSubMenuOpen(false); }}/>}
           </li>
         </ul>
         <ul className="list-none">

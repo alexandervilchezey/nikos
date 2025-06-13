@@ -2,7 +2,7 @@ import ProductItem from '../reusable/ProductItem.jsx';
 import dataProductos from '../../utils/dataProductos.js';
 import {marcasZapatos, usuarioGeneral, tipoCalzado} from '../../utils/dataGeneral.js';
 
-export default function MegaSubMenu() {
+export default function MegaSubMenu({onClose}) {
   const productosDestacados = dataProductos
     .filter((producto) => producto.destacado === true)
     .slice(0, 3);
@@ -17,7 +17,7 @@ export default function MegaSubMenu() {
             <div className="dotgrid">
               <div className="wrapper">
                 {productosDestacados.map((producto, index) => (
-                  <ProductItem key={index} producto={producto} />
+                  <ProductItem key={index} onClose={onClose} producto={producto} />
                 ))}
               </div>
             </div>
