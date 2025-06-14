@@ -10,8 +10,8 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-3">Enlaces</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:underline">Inicio</a></li>
-            <li><a href="#" className="hover:underline">Productos</a></li>
+            <li><a href="/" className="hover:underline">Inicio</a></li>
+            <li><a href="/productos" className="hover:underline">Productos</a></li>
             <li><a href="#marcas" className="hover:underline">Marcas</a></li>
             <li><a href="#contacto" className="hover:underline">Contacto</a></li>
           </ul>

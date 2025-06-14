@@ -80,28 +80,54 @@ export const usuarioGeneral = [
 ]
 
 export const tipoCalzado = [
-    {
-        id: "T0001",
-        nombre: "Urbano",
-    },
-    {
-        id: "T0002",
-        nombre: "Deportivo",
-    },
-    {
-        id: "T0003",
-        nombre: "Elegante",
-    },
-    {
-        id: "T0004",
-        nombre: "Casual",
-    },
-    {
-        id: "T0005",
-        nombre: "Escolar",
-    },
-    {
-        id: "T0006",
-        nombre: "Chimpun",
-    }
-]
+  { nombre: "Urbano" },
+  { nombre: "Deportivo" },
+  { nombre: "Escolar" },
+  { nombre: "Elegante" },
+  { nombre: "Casual" },
+  { nombre: "Chimpún" },
+  { nombre: "Sandalias" },
+];
+
+export const usuarios = [
+  { nombre: "Hombre" },
+  { nombre: "Mujer" },
+  { nombre: "Niño" },
+  { nombre: "Niña" },
+  { nombre: "Unisex" },
+];
+
+export const materiales = [
+  { nombre: "Cuero" },
+  { nombre: "Sintético" },
+  { nombre: "Textil" },
+  { nombre: "Malla" },
+  { nombre: "Lona" },
+  { nombre: "Gamuza" },
+];
+
+export const usos = [
+  { nombre: "Para correr" },
+  { nombre: "Para el día a día" },
+  { nombre: "Escolar" },
+  { nombre: "Casual" },
+  { nombre: "Deportivo" },
+  { nombre: "Trabajo" },
+  { nombre: "Oficina" },
+];
+
+export const origenes = [
+  { nombre: "Nacional" },
+  { nombre: "Importado" },
+];
+
+export const colores = [
+  { nombre: "Blanco" },
+  { nombre: "Negro" },
+  { nombre: "Azul" },
+  { nombre: "red" },
+  { nombre: "Gris" },
+  { nombre: "Verde" },
+  { nombre: "Marrón" },
+  { nombre: "Beige" },
+];

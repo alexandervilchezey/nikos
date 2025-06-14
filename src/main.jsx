@@ -1,13 +1,20 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.jsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 import './index.scss'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+// Contextos combinados
+import { CarritoProvider, ModalCarritoProvider } from "./components/carrito/CarritoContext";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <CarritoProvider>
+        <ModalCarritoProvider>
+          <App />
+        </ModalCarritoProvider>
+      </CarritoProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -5,9 +5,10 @@ import HeaderRight from '../header/HeaderRight';
 import SearchFloat from '../header/SearchFloat';
 import Overlay from '../header/Overlay';
 import MobileMenu from '../header/MobileMenu';
+import dataProductos from "../../utils/dataProductos";
 
 export default function Header() {
-  const [isBigSubmenuOpen, setIsBigSubMenuOpen] = useState(false);
+  // const [isBigSubmenuOpen, setIsBigSubMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSubmenuOpen, setIsSubMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function Header() {
     const handleResize = (e) => {
       if (e.matches) {
         setIsMobileMenuOpen(false);
-        setIsBigSubMenuOpen(false);
+        // setIsBigSubMenuOpen(false);
       }
     };
     mediaQuery.addListener(handleResize);
@@ -32,16 +33,20 @@ export default function Header() {
             <div className="wrap">
               <HeaderLeft setIsMobileMenuOpen={setIsMobileMenuOpen} />
               <HeaderCenter
-                isBigSubmenuOpen={isBigSubmenuOpen}
-                setIsBigSubMenuOpen={setIsBigSubMenuOpen}
+                // isBigSubmenuOpen={isBigSubmenuOpen}
+                // setIsBigSubMenuOpen={setIsBigSubMenuOpen}
               />
               <HeaderRight setIsSearchOpen={setIsSearchOpen} />
             </div>
           </div>
-          <SearchFloat isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
+          <SearchFloat
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            productos={dataProductos}
+          />
         </div>
       </header>
-      <Overlay isActive={isSearchOpen || isMobileMenuOpen} />
+      {/* <Overlay isActive={isSearchOpen || isMobileMenuOpen} /> */}
       <MobileMenu
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}

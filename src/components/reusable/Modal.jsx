@@ -3,13 +3,10 @@ export default function Modal({ isOpen, onClose, children }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
       <div 
         className="absolute inset-0 bg-opacity-50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
-
-      {/* Modal content */}
       <div className="relative z-10 bg-white p-6 rounded shadow-lg w-full max-w-md mx-4">
         <button 
           onClick={onClose} 

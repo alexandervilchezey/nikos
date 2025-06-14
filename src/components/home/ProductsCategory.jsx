@@ -3,9 +3,15 @@ import MainCategorySelector from "../home/MainCategorySelector.jsx";
 import dataProductos from '../../utils/dataProductos.js';
 import {usuarioGeneral} from '../../utils/dataGeneral.js';
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductsCategory() {
+const navigate = useNavigate();
 const [filteredData, setFilteredData] = useState([]);
+
+  const goToProductsPage = () => {
+    navigate(`/productos`);
+  };
 
 const getMaxItemsByBreakpoint = () => {
   const width = window.innerWidth;
@@ -16,7 +22,6 @@ const getMaxItemsByBreakpoint = () => {
 };
 
 const handleCategorySelect = (option) => {
-
     setFilteredData([]);
 
     const usuario = option.nombre;
@@ -60,7 +65,7 @@ useEffect(() => {
                             <ProductItem key={index} producto={producto} />
                         ))}
                         </div>
-                        <div className="button my-3 mx-auto min-w-[150px] w-[150px] cursor-pointer">
+                        <div onClick={goToProductsPage} className="button my-3 mx-auto min-w-[150px] w-[150px] cursor-pointer">
                             <div className="btn primary-btn">Ver más</div>
                         </div>
                     </div>

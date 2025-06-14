@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Modal from "../reusable/Modal";
+import { useCarrito } from "../carrito/CarritoContext";
 
 export default function ProductSummary({ producto }) {
+  const { agregarAlCarrito } = useCarrito();
   const [colorSelected, setColorSelected] = useState('');
   const [tallaSelected, setTallaSelected] = useState('');
   const [countProducts, setCountProducts] = useState(1);
@@ -15,6 +17,26 @@ export default function ProductSummary({ producto }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000); // Se borra luego de 2 segundos
   };
+
+  const handleAgregar = (producto) => {
+    if (!tallaSelected || !colorSelected) {
+      alert("Selecciona talla y color");
+      return;
+    }
+
+    const item = {
+      slug: producto.slug,
+      nombre: producto.nombre,
+      imagen: producto.imagenes[0],
+      talla: tallaSelected,
+      color: colorSelected,
+      cantidad: parseInt(countProducts),
+      precio: producto.precio,
+    };
+    console.log('item', item);
+    agregarAlCarrito(item);
+  };
+
 
   return (
     <div className="summary">
@@ -63,7 +85,7 @@ export default function ProductSummary({ producto }) {
             <button onClick={() => setCountProducts(countProducts + 1)} className="increase h-[40px] w-[40px] bg-[#f1f1f1]">+</button>
           </div>
           <div className="addcart button">
-            <button type="submit" className="btn primary-btn">Añadir al carrito</button>
+            <button onClick={() => handleAgregar(producto)} type="submit" className="btn primary-btn">Añadir al carrito</button>
           </div>
         </div>
         <div className="product-control list-inline">

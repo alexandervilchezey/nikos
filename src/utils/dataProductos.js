@@ -319,7 +319,7 @@ const productosZapatos = [
   descuento: 30,
   destacado: false,
   fechaAgregado: 1716028200,
-  etiquetas: ["boost", "adidas", "superstar", "deportivo", "mujer"]
+  etiquetas: ["zapatillas blancas", "boost", "adidas", "superstar", "deportivo", "mujer"]
 },
 
   {

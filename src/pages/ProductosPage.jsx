@@ -1,22 +1,39 @@
-import { useEffect, useState } from "react";
-import dataProductos from '../utils/dataProductos.js';
-import {marcasZapatos, tipoCalzado} from '../utils/dataGeneral.js';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import dataProductos from "../utils/dataProductos";
+import ModalFiltros from "../components/reusable/ModalFiltros";
+import Filtros from "../components/products/Filtros";
 
 export default function ProductosPage() {
-  const [filters, setFilters] = useState({ tipo: [], marca: [], precioMax: 500 });
-  const [productos, setProductos] = useState([]);
-  const [mostrarModalFiltros, setMostrarModalFiltros] = useState(false);
-  const [cantidadVisible, setCantidadVisible] = useState(6);
+  const [filters, setFilters] = useState({
+    tipo: [],
+    marca: [],
+    usuario: [],
+    material: [],
+    uso: [],
+    origen: [],
+    color: [],
+    precioMax: 500
+  });
 
-  useEffect(() => {
-    const filtrados = dataProductos.filter((producto) => {
-      const cumpleTipo = filters.tipo.length === 0 || filters.tipo.includes(producto.tipoCalzado[0]);
-      const cumpleMarca = filters.marca.length === 0 || filters.marca.includes(producto.marca);
-      const cumplePrecio = producto.precio <= filters.precioMax;
-      return cumpleTipo && cumpleMarca && cumplePrecio;
-    });
-    setProductos(filtrados);
-  }, [filters]);
+  const [productos, setProductos] = useState(dataProductos); // todos por defecto
+  const [mostrarModalFiltros, setMostrarModalFiltros] = useState(false);
+  const [animatingClose, setAnimatingClose] = useState(false);
+  const [cantidadVisible, setCantidadVisible] = useState(6);
+  const navigate = useNavigate();
+
+  const handleClick = (producto) => {
+    navigate(`/productos/${producto.slug}`);
+  };
+
+  const cerrarModalConAnimacion = () => {
+    setAnimatingClose(true);
+    setTimeout(() => {
+      setMostrarModalFiltros(false);
+      setAnimatingClose(false);
+    }, 400);
+  };
 
   const toggleFiltro = (key, valor) => {
     setFilters((prev) => {
@@ -26,109 +43,129 @@ export default function ProductosPage() {
     });
   };
 
-  return (
-    <div className="flex flex-col md:flex-row gap-4 px-4 py-6">
-      {/* Modal Responsive */}
-      {mostrarModalFiltros && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex">
-          <div className="bg-white w-64 p-4 overflow-y-auto h-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Filtros</h2>
-              <button onClick={() => setMostrarModalFiltros(false)}>✕</button>
-            </div>
-            <Filtros {...{ filters, toggleFiltro, setFilters }} />
-          </div>
-        </div>
-      )}
+  const handleFiltrar = () => {
+    const filtrados = dataProductos.filter((producto) => {
+      const cumpleTipo =
+        filters.tipo.length === 0 || filters.tipo.some((t) => producto.tipoCalzado.includes(t));
 
-      {/* Sidebar Filtros */}
-      <aside className="hidden md:block w-full max-w-[250px]">
-        <Filtros {...{ filters, toggleFiltro, setFilters }} />
+      const cumpleMarca =
+        filters.marca.length === 0 || filters.marca.includes(producto.marca);
+
+      const cumplePrecio = producto.precio <= filters.precioMax;
+
+      const cumpleUsuario =
+        filters.usuario.length === 0 || filters.usuario.includes(producto.usuario);
+
+      const cumpleMaterial =
+        filters.material.length === 0 ||
+        filters.material.some((m) => producto.material.includes(m));
+
+      const cumpleUso =
+        filters.uso.length === 0 || filters.uso.some((u) => producto.uso.includes(u));
+
+      const cumpleOrigen =
+        filters.origen.length === 0 || filters.origen.includes(producto.origen);
+
+      const cumpleColor =
+        filters.color.length === 0 ||
+        filters.color.some((c) => producto.colores.includes(c));
+
+      return (
+        cumpleTipo &&
+        cumpleMarca &&
+        cumplePrecio &&
+        cumpleUsuario &&
+        cumpleMaterial &&
+        cumpleUso &&
+        cumpleOrigen &&
+        cumpleColor
+      );
+    });
+    cerrarModalConAnimacion();
+    setProductos(filtrados);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row gap-4 px-4 py-1">
+      {/* Modal móvil */}
+      <ModalFiltros
+        mostrarModalFiltros={mostrarModalFiltros}
+        animatingClose={animatingClose}
+        cerrarModalConAnimacion={cerrarModalConAnimacion}
+        filters={filters}
+        toggleFiltro={toggleFiltro}
+        setFilters={setFilters}
+      >
+        <Filtros
+          filters={filters}
+          setFilters={setFilters}
+          toggleFiltro={toggleFiltro}
+          onFiltrar={handleFiltrar}
+        />
+      </ModalFiltros>
+
+      {/* Filtros escritorio */}
+      <aside className="hidden md992:block w-full max-w-[250px]">
+        <Filtros
+          filters={filters}
+          setFilters={setFilters}
+          toggleFiltro={toggleFiltro}
+          onFiltrar={handleFiltrar}
+        />
       </aside>
 
       {/* Productos */}
       <main className="flex-1">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-lg font-semibold">
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-md font-light">
             Mostrando 1 - {Math.min(cantidadVisible, productos.length)} de {productos.length} productos
           </h1>
-          <button className="md:hidden btn border px-4 py-2" onClick={() => setMostrarModalFiltros(true)}>Filtros</button>
+          <button
+            className="md992:hidden btn border px-3 py-2"
+            onClick={() => setMostrarModalFiltros(true)}
+          >
+            <i className='bx bx-filter'></i> 
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {productos.slice(0, cantidadVisible).map((p) => (
-            <div key={p.id} className="border p-2 rounded shadow-sm">
-              <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-40 object-cover rounded" />
-              <h2 className="mt-2 text-sm font-medium">{p.nombre}</h2>
-              <p className="text-gray-700 text-sm">s/. {p.precio.toFixed(2)}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {productos.slice(0, cantidadVisible).map((producto) => (
+            <div
+              key={producto.slug}
+              onClick={() => handleClick(producto)}
+              className="cursor-pointer bg-white transition duration-300 flex flex-col"
+            >
+              <div className="w-full aspect-square overflow-hidden">
+                <img
+                  src={producto.imagenes?.[0]}
+                  alt={producto.nombre}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-2">
+                <h2 className="text-base text-gray-900 leading-snug break-words mb-1">{producto.nombre}</h2>
+                <div className="text-sm text-gray-500 mb-2">{producto.marca}</div>
+                <div className="flex flex-wrap items-center space-x-2">
+                  <span className="font-semibold text-gray-800 mr-2">s/.{producto.precio}</span>
+                  <span className="text-sm text-gray-400 line-through">s/.{producto.precio}</span>
+                  <span className="text-sm text-green-500 font-semibold w-full">-{producto.descuento}%</span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
         {cantidadVisible < productos.length && (
-          <div className="text-center mt-6">
+          <div className="button text-center mt-6">
             <button
               onClick={() => setCantidadVisible(cantidadVisible + 6)}
-              className="btn border px-4 py-2"
+              className="btn secondary-btn border px-4 py-2"
             >
               Ver más
             </button>
           </div>
         )}
       </main>
-    </div>
-  );
-}
-
-function Filtros({ filters, toggleFiltro, setFilters }) {
-  return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="font-semibold mb-2">Tipo de Calzado</h3>
-        <div className="space-y-1">
-          {tipoCalzado.map((t) => (
-            <label key={t.id} className="block text-sm">
-              <input
-                type="checkbox"
-                checked={filters.tipo.includes(t.nombre)}
-                onChange={() => toggleFiltro("tipo", t.nombre)}
-                className="mr-2"
-              />
-              {t.nombre}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-semibold mb-2">Marca</h3>
-        <div className="space-y-1">
-          {marcasZapatos.map((m) => (
-            <label key={m.id} className="block text-sm">
-              <input
-                type="checkbox"
-                checked={filters.marca.includes(m.nombre)}
-                onChange={() => toggleFiltro("marca", m.nombre)}
-                className="mr-2"
-              />
-              {m.nombre}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-semibold mb-2">Precio máximo: s/. {filters.precioMax}</h3>
-        <input
-          type="range"
-          min="50"
-          max="500"
-          step="10"
-          value={filters.precioMax}
-          onChange={(e) => setFilters({ ...filters, precioMax: parseInt(e.target.value) })}
-          className="w-full"
-        />
-      </div>
     </div>
   );
 }

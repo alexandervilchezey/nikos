@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 export default defineConfig({
+  base: '/nikos/',
   plugins: [
     tailwindcss(),
     react()
@@ -11,6 +12,6 @@ export default defineConfig({
     port: 5173,
     strictPort: true, // lanza error si el puerto está en uso
     cors: true, // habilita CORS
-    allowedHosts: ['.ngrok-free.app'], // permite conexiones desde dominios específicos
+    allowedHosts: ['.ngrok-free.app', '.trycloudflare.com'], // permite conexiones desde dominios específicos
   },
 })

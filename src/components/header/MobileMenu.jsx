@@ -1,44 +1,50 @@
+import { useState } from "react";
+import ModalFiltros from "../reusable/ModalFiltros";
 import { tipoCalzado, usuarioGeneral, marcasZapatos } from "../../utils/dataGeneral";
-import { useEffect } from "react";
 
-export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSubmenuOpen, setIsSubMenuOpen }) {
+export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
+  const [animatingClose, setAnimatingClose] = useState(false);
+  const [isSubmenuOpen, setIsSubMenuOpen] = useState(false);
   const marcasDestacadas = marcasZapatos.slice(0, 5);
   const tiposDestacados = tipoCalzado.slice(0, 4);
   const usuariosDestacados = usuarioGeneral.slice(0, 4);
+  const cerrarModalConAnimacion = () => {
+    setAnimatingClose(true);
+    setTimeout(() => {
+      setIsMobileMenuOpen(false);
+      setAnimatingClose(false);
+    }, 400);
+  };
 
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-
-    // Limpieza por si acaso
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
-  }, [isMobileMenuOpen]);
-  
   return (
-    <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
-      <div className="wrap">
-        <a href="#" className='close-trigger right-0' onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}>
-          <i className='bx bx-x'></i>
-        </a>
-        <div className="main-menu scrollto">
+    <ModalFiltros
+      mostrarModalFiltros={isMobileMenuOpen}
+      animatingClose={animatingClose}
+      cerrarModalConAnimacion={cerrarModalConAnimacion}
+    >
+      <div className="main-menu scrollto">
           <nav className='wrapper'>
-            <ul>
-              <li><a href="/#banner"><span>Inicio</span></a></li>
-              <li className='has-child'>
-                <a href="#" onClick={(e) => { e.preventDefault(); setIsSubMenuOpen(!isSubmenuOpen); }}>
-                  <span>Productos</span>
-                  <span className='child-trigger right-0'><i className='bx bx-caret-down'></i></span>
+            <ul className="pt-2">
+              <li>
+                <a className="block" href="/">
+                  <span>Inicio</span>
                 </a>
+              </li>
+              <li className='has-child'>
+                <a className="flex" href="#" onClick={(e) => { e.preventDefault(); setIsSubMenuOpen(!isSubmenuOpen); }}>
+                  <span>Productos</span>
+                  <span className='child-trigger flex flex-wrap content-center'>
+                    <i className='bx bx-caret-down'></i>
+                  </span>
+                </a>
+                <div className={`mb-2 sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
+                  <h3 className="dot-title"><a href="/productos">Ver todo</a></h3>
+                </div>
                 <div className={`sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
                   <h3 className="dot-title">Marcas</h3>
                   <ul>
                     {marcasDestacadas.map((marca) => (
-                      <li key={marca.id}><a href="#">{marca.nombre}</a></li>
+                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
                     ))}
                   </ul>
                 </div>
@@ -46,7 +52,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
                   <h3 className="dot-title">Tipo Calzado</h3>
                   <ul>
                     {tiposDestacados.map((marca) => (
-                      <li key={marca.id}><a href="#">{marca.nombre}</a></li>
+                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
                     ))}
                   </ul>
                 </div>
@@ -54,13 +60,13 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
                   <h3 className="dot-title">Usuario</h3>
                   <ul>
                     {usuariosDestacados.map((marca) => (
-                      <li key={marca.id}><a href="#">{marca.nombre}</a></li>
+                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
                     ))}
                   </ul>
                 </div>
               </li>
-              <li><a href="/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
-              <li><a href="/#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
+              <li><a className="block" href="/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
+              <li><a className="block" href="#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
             </ul>
           </nav>
           <div className="button mt-auto">
@@ -68,7 +74,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen, isSu
             <a href="" className="btn primary-btn">Registrarse</a>
           </div>
         </div>
-      </div>
-    </div>
+    </ModalFiltros>
+    
   );
 }
