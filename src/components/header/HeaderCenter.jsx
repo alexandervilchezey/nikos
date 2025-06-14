@@ -6,7 +6,7 @@ export default function HeaderCenter() {
     <div className="header-center">
       <nav className="hidden md992:grid menu">
         <ul className="list-none">
-          <li><a className='link-menu' href="/">Inicio</a></li>
+          <li><a className='link-menu' href="/nikos">Inicio</a></li>
           <li><a className='link-menu' href="/nikos/productos">Productos</a></li>
           {/* <li>
             <a href="#" className="link-menu" onClick={(e) => { e.preventDefault(); setIsBigSubMenuOpen(!isBigSubmenuOpen); }}>

@@ -26,7 +26,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
           <nav className='wrapper'>
             <ul className="pt-2">
               <li>
-                <a className="block" href="/">
+                <a className="block" href="/nikos">
                   <span>Inicio</span>
                 </a>
               </li>
