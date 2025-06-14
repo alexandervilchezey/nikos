@@ -7,7 +7,7 @@ export default function HeaderCenter() {
       <nav className="hidden md992:grid menu">
         <ul className="list-none">
           <li><a className='link-menu' href="/">Inicio</a></li>
-          <li><a className='link-menu' href="/productos">Productos</a></li>
+          <li><a className='link-menu' href="/nikos/productos">Productos</a></li>
           {/* <li>
             <a href="#" className="link-menu" onClick={(e) => { e.preventDefault(); setIsBigSubMenuOpen(!isBigSubmenuOpen); }}>
               Productos <i className='bx bx-caret-down'></i>
@@ -16,7 +16,7 @@ export default function HeaderCenter() {
           </li> */}
         </ul>
         <ul className="list-none">
-          <li><a className='link-menu' href="/#marcas">Marcas</a></li>
+          <li><a className='link-menu' href="/nikos/#marcas">Marcas</a></li>
           <li><a className='link-menu' href="#contacto">Contacto</a></li>
         </ul>
       </nav>

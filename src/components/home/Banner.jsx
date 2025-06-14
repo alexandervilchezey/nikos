@@ -73,7 +73,7 @@ const ResponsiveSlideImage = ({ image }) => {
                             <div className="wrap">
                               <h3 className={`title ${slide.textColor === 'primary-btn' ? 'md:text-white' : 'md:text-black'}`}>{slide.title}</h3>
                               <div className="button">
-                                <a href="/productos" className={`btn ${slide.textColor === 'primary-btn' ? 'primary-btn' : 'secondary-btn'}`}>Compra Ahora</a>
+                                <a href="/nikos/productos" className={`btn ${slide.textColor === 'primary-btn' ? 'primary-btn' : 'secondary-btn'}`}>Compra Ahora</a>
                               </div>
                             </div>
                           </div>

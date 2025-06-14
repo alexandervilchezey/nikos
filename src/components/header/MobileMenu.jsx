@@ -38,7 +38,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
                   </span>
                 </a>
                 <div className={`mb-2 sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
-                  <h3 className="dot-title"><a href="/productos">Ver todo</a></h3>
+                  <h3 className="dot-title"><a href="/nikos/productos">Ver todo</a></h3>
                 </div>
                 <div className={`sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
                   <h3 className="dot-title">Marcas</h3>
@@ -65,7 +65,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
                   </ul>
                 </div>
               </li>
-              <li><a className="block" href="/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
+              <li><a className="block" href="/nikos/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
               <li><a className="block" href="#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
             </ul>
           </nav>
