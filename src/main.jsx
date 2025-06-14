@@ -9,7 +9,7 @@ import { CarritoProvider, ModalCarritoProvider } from "./components/carrito/Carr
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/nikos">
       <CarritoProvider>
         <ModalCarritoProvider>
           <App />
