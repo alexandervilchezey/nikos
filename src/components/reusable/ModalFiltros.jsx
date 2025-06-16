@@ -6,6 +6,7 @@ export default function ModalFiltros({
   cerrarModalConAnimacion,
   direction = "left",
   width = "w-72",
+  minHeight = "max-h-[calc(100vh-8rem)] md:max-h-[calc(100vh-4rem)]",
   children
 }) {
   useEffect(() => {
@@ -31,12 +32,12 @@ export default function ModalFiltros({
       />
 
       <div
-        className={`relative h-full bg-white shadow-xl ${width} ${directionClass} ${direction === "right" ? "max-w-[75%] right-0 absolute ml-auto" : "left-0 absolute"}`}
+        className={`relative h-full bg-white shadow-xl ${width} ${directionClass} ${direction === "right" ? "max-w-[80%] right-0 absolute ml-auto" : "left-0 absolute"}`}
       >
         <div className="flex justify-end items-center p-4">
           <button onClick={cerrarModalConAnimacion}>✕</button>
         </div>
-        <div className="p-2 overflow-y-auto h-full max-h-[calc(100vh-6rem)]">
+        <div className={`p-2 overflow-y-auto h-full ${minHeight}`}>
           {children}
         </div>
       </div>

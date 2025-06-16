@@ -12,42 +12,66 @@ export function CarritoProvider({ children }) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
-    const agregarAlCarrito = (productoNuevo) => {
+  const agregarAlCarrito = (productoNuevo) => {
     setCarrito((prev) => {
-      const existe = prev.find(
+      const index = prev.findIndex(
         (item) =>
           item.slug === productoNuevo.slug &&
           item.talla === productoNuevo.talla &&
           item.color === productoNuevo.color
       );
 
-      if (existe) {
-        // Si ya existe, solo sumamos la cantidad
-        return prev.map((item) =>
-          item.slug === productoNuevo.slug &&
-          item.talla === productoNuevo.talla &&
-          item.color === productoNuevo.color
-            ? { ...item, cantidad: item.cantidad + productoNuevo.cantidad }
-            : item
-        );
+      if (index !== -1) {
+        const actualizado = [...prev];
+        const nuevaCantidad = actualizado[index].cantidad + productoNuevo.cantidad;
+        actualizado[index].cantidad = Math.min(nuevaCantidad, 3); // máximo 3 unidades
+        return actualizado;
       }
 
-      // Nuevo item
-      return [...prev, productoNuevo];
+      return [...prev, { ...productoNuevo, cantidad: Math.min(productoNuevo.cantidad, 3) }];
     });
   };
 
-  const quitarDelCarrito = (slug) => {
-    setCarrito((prev) => prev.filter((item) => item.slug !== slug));
+  const quitarDelCarrito = (slug, talla, color) => {
+    setCarrito((prev) =>
+      prev.filter(
+        (item) =>
+          !(item.slug === slug && item.talla === talla && item.color === color)
+      )
+    );
   };
 
   const vaciarCarrito = () => {
     setCarrito([]);
   };
 
+  const actualizarCantidad = (slug, talla, color, nuevaCantidad) => {
+    setCarrito((prev) =>
+      prev.map((item) => {
+        if (
+          item.slug === slug &&
+          item.talla === talla &&
+          item.color === color
+        ) {
+          return {
+            ...item,
+            cantidad: Math.max(1, Math.min(nuevaCantidad, 3)), // entre 1 y 3
+          };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
     <CarritoContext.Provider
-      value={{ carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito }}
+      value={{
+        carrito,
+        agregarAlCarrito,
+        quitarDelCarrito,
+        vaciarCarrito,
+        actualizarCantidad,
+      }}
     >
       {children}
     </CarritoContext.Provider>

@@ -7,6 +7,7 @@ import ProductosPage from './pages/ProductosPage';
 import { useModalCarrito } from "./components/carrito/CarritoContext";
 import ModalFiltros from "./components/reusable/ModalFiltros";
 import CarritoModal from "./components/carrito/CarritoModal";
+import Checkout from './pages/Checkout';
 
 function App() {
   const {
@@ -21,6 +22,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/productos" element={<ProductosPage />} />
           <Route path="/productos/:slug" element={<Products />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Route>
       </Routes>
       <ModalFiltros

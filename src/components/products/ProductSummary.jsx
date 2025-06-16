@@ -58,7 +58,7 @@ export default function ProductSummary({ producto }) {
               <button
                 key={index}
                 style={{ backgroundColor: `${color}` }}
-                className={`${colorSelected === color ? 'selected' : ''}`}
+                className={`border ${colorSelected === color ? 'selected' : ''}`}
                 onClick={() => { setColorSelected(color) }}
               ></button>
             ))}

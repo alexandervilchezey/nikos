@@ -8,7 +8,6 @@ import dataProductos from '../utils/dataProductos.js';
 const Products = () => {
   const { slug } = useParams();
   const producto = dataProductos.find((p) => p.slug === slug);
-  console.log(producto);
   if (!producto) {
     return <h2>Producto no encontrado</h2>;
   }
