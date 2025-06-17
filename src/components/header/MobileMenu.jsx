@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 import ModalFiltros from "../reusable/ModalFiltros";
-import { tipoCalzado, usuarioGeneral, marcasZapatos } from "../../utils/dataGeneral";
+import { auth } from "../../firebase/firebase";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [animatingClose, setAnimatingClose] = useState(false);
-  const [isSubmenuOpen, setIsSubMenuOpen] = useState(false);
-  const marcasDestacadas = marcasZapatos.slice(0, 5);
-  const tiposDestacados = tipoCalzado.slice(0, 4);
-  const usuariosDestacados = usuarioGeneral.slice(0, 4);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const cerrarModalConAnimacion = () => {
     setAnimatingClose(true);
     setTimeout(() => {
@@ -23,58 +26,93 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
       cerrarModalConAnimacion={cerrarModalConAnimacion}
     >
       <div className="main-menu scrollto">
-          <nav className='wrapper'>
-            <ul className="pt-2">
-              <li>
-                <a className="block" href="/nikos">
-                  <span>Inicio</span>
-                </a>
-              </li>
-              <li className='has-child'>
-                <a className="flex" href="#" onClick={(e) => { e.preventDefault(); setIsSubMenuOpen(!isSubmenuOpen); }}>
-                  <span>Productos</span>
-                  <span className='child-trigger flex flex-wrap content-center'>
-                    <i className='bx bx-caret-down'></i>
-                  </span>
-                </a>
-                <div className={`mb-2 sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
-                  <h3 className="dot-title"><a href="/nikos/productos">Ver todo</a></h3>
-                </div>
-                <div className={`sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
-                  <h3 className="dot-title">Marcas</h3>
-                  <ul>
-                    {marcasDestacadas.map((marca) => (
-                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
-                    ))}
-                  </ul>
-                </div>
-                <div className={`sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
-                  <h3 className="dot-title">Tipo Calzado</h3>
-                  <ul>
-                    {tiposDestacados.map((marca) => (
-                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
-                    ))}
-                  </ul>
-                </div>
-                <div className={`sub-menu list-block ${isSubmenuOpen ? 'active' : ''}`}>
-                  <h3 className="dot-title">Usuario</h3>
-                  <ul>
-                    {usuariosDestacados.map((marca) => (
-                      <li key={marca.id}><a className="block" href="#">{marca.nombre}</a></li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-              <li><a className="block" href="/nikos/#marcas" onClick={() => {setIsMobileMenuOpen(false); }}><span>Marcas</span></a></li>
-              <li><a className="block" href="#contacto" onClick={() => {setIsMobileMenuOpen(false); }}><span>Contacto</span></a></li>
-            </ul>
-          </nav>
-          <div className="button mt-auto">
-            <a href="" className="btn secondary-btn">Iniciar Sesion</a>
-            <a href="" className="btn primary-btn">Registrarse</a>
+        <nav className="wrapper">
+          <ul className="pt-2">
+            <li>
+              <a className="block" href="/nikos">
+                <span>Inicio</span>
+              </a>
+            </li>
+            <li>
+              <a className="block" href="/nikos/productos">
+                <span>Productos</span>
+              </a>
+            </li>
+            <li>
+              <a className="block" href="/nikos/#marcas" onClick={() => setIsMobileMenuOpen(false)}>
+                <span>Marcas</span>
+              </a>
+            </li>
+            <li>
+              <a className="block" href="#contacto" onClick={() => setIsMobileMenuOpen(false)}>
+                <span>Contacto</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        {/* MENÚ DE USUARIO */}
+        {user && (
+          <div className="border-t pt-4 px-4">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="w-full text-left text-black font-medium mb-2"
+            >
+              Hola, {user.displayName || user.email}
+            </button>
+
+            {isUserMenuOpen && (
+              <ul className="pl-2 text-sm text-gray-700 space-y-2">
+                <li>
+                  <button
+                    onClick={() => {
+                      navigate("/perfil");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left"
+                  >
+                    Ver perfil
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      navigate("/mis-compras");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left"
+                  >
+                    Mis compras
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={async () => {
+                      await signOut(auth);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-red-600"
+                  >
+                    Cerrar sesión
+                  </button>
+                </li>
+              </ul>
+            )}
           </div>
-        </div>
+        )}
+
+        {/* BOTONES LOGIN/REGISTER */}
+        {!user && (
+          <div className="button mt-auto">
+            <a href="/nikos/login" className="btn secondary-btn">
+              Iniciar Sesión
+            </a>
+            <a href="/nikos/register" className="btn primary-btn">
+              Registrarse
+            </a>
+          </div>
+        )}
+      </div>
     </ModalFiltros>
-    
   );
 }

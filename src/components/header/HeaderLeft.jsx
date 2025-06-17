@@ -1,4 +1,7 @@
+import { useAuth } from "../../hooks/useAuth";
+
 export default function HeaderLeft({ setIsMobileMenuOpen }) {
+  const { user } = useAuth();
   return (
     <div className="header-left">
       <div className="menu-bar">
@@ -8,12 +11,7 @@ export default function HeaderLeft({ setIsMobileMenuOpen }) {
       </div>
       <div className="hidden md992:block list-inline">
         <ul className="list-none">
-          <li>
-            <a href="">
-              <i className='bx bx-user'></i>
-            </a>
-          </li>
-          <li className="px-5"></li>
+          <li className={user? "w-[280px]" : 'w-[170px]'}></li>
         </ul>
       </div>
     </div>

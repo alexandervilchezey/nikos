@@ -24,10 +24,10 @@ export const generarMensajeWhatsApp = (numeroOrden, data, carrito, total) => {
     `• ${item.nombre} x${item.cantidad} – S/ ${item.precio * item.cantidad}`
   ).join('\n');
 
-  return `📦 Se envía la orden N°${String(numeroOrden).padStart(4, '0')} de ${nombre}
+  return `Hola! se envía la orden N°${String(numeroOrden).padStart(4, '0')} de ${nombre}
 
-🛍️ Productos:
+ Productos:
 ${productosTexto}
 
-🧾 Subtotal: S/ ${total}`;
+ Total: S/. ${total}`;
 };

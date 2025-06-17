@@ -90,11 +90,10 @@ export default function ProductSummary({ producto }) {
         </div>
         <div className="product-control list-inline">
           <ul>
-            <li><a href=""><i className='bx bx-heart'></i><span>Añadir a favoritos</span></a></li>
             <li>
                 <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1">
                     <i className='bx bx-share'></i>
-                    <span>Compartir</span>
+                    <span>Compartir Producto</span>
                 </button>
             </li>
           </ul>

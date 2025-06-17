@@ -5,13 +5,14 @@ import { useCarrito } from "../components/carrito/CarritoContext";
 import InputField from "../components/reusable/InputField";
 import SelectField from "../components/reusable/SelectField";
 import ubicacionesPeru from "../utils/ubicacionesPeru";
-
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { generarMensajeWhatsApp, obtenerNuevoNumeroOrden } from "../utils/generalFunctions";
 
+const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
+
 export default function CheckoutPage() {
-  const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
+  
   const { carrito, vaciarCarrito } = useCarrito();
   const navigate = useNavigate();
   const {
@@ -39,7 +40,7 @@ export default function CheckoutPage() {
     });
 
     const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total);
-    const numeroTelefono = numeroWhatsApp;
+    const numeroTelefono = numeroWhatsApp || '51944788568';
     const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
     window.open(urlWhatsApp, '_blank');
 
@@ -177,7 +178,7 @@ export default function CheckoutPage() {
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            Finalizar compra
+            Enviar compra
           </button>
         </div>
       </form>
@@ -216,7 +217,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center">
             <h3 className="text-xl font-bold mb-2">¡Gracias por tu compra!</h3>
             <p className="text-sm text-gray-600 mb-4">
-              En unos minutos, uno de nuestros asesores se comunicará contigo para los siguientes pasos.
+              Por favor no olvides enviar la orden por WhatsApp y uno de nuestros asesores se comunicará contigo para los siguientes pasos.
             </p>
             <button
               onClick={finalizarCompra}
