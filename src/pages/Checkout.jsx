@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCarrito } from "../components/carrito/CarritoContext";
 import InputField from "../components/reusable/InputField";
 import SelectField from "../components/reusable/SelectField";
 import ubicacionesPeru from "../utils/ubicacionesPeru";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../firebase/firebase";
 import { generarMensajeWhatsApp, obtenerNuevoNumeroOrden } from "../utils/generalFunctions";
 
 const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
 
 export default function CheckoutPage() {
-  
   const { carrito, vaciarCarrito } = useCarrito();
   const navigate = useNavigate();
   const {
@@ -22,33 +21,83 @@ export default function CheckoutPage() {
     reset,
     formState: { errors, isValid },
   } = useForm({ mode: "onChange" });
+
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const ciudades = Object.keys(ubicacionesPeru);
   const distritos = watch("ciudad") ? ubicacionesPeru[watch("ciudad")] : [];
 
+  // Autocompletar campos con datos del usuario
+useEffect(() => {
+  const user = auth.currentUser;
+  if (user) {
+    const fetchData = async () => {
+      const docRef = doc(db, 'usuarios', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const displayName = user.displayName || '';
+        const [nombre, apellido] = displayName.split(' ');
+
+        reset({
+          nombre: nombre || '',
+          apellido: apellido || '',
+          telefono: data.telefono || '',
+          dni: data.dni || '',
+          direccion: data.direccion || '',
+          codigopostal: data.codigopostal || '',
+          ciudad: data.ciudad || '',
+          notas: data.notas || '',
+        });
+
+        // Esperar a que ciudad se haya montado
+        setTimeout(() => {
+          reset((prev) => ({
+            ...prev,
+            distrito: data.distrito || '',
+          }));
+        }, 50);
+      }
+    };
+
+    fetchData();
+  }
+}, [reset]);
+
+
   const onSubmit = async (data) => {
+    setLoading(true);
+  if (!isValid) {
+    console.warn("Formulario inválido. Revisa los campos.");
+    setLoading(false);
+    return;
+  }
+
   try {
     const numeroOrden = await obtenerNuevoNumeroOrden();
 
     await addDoc(collection(db, "ordenes"), {
+      uid: auth.currentUser?.uid,
       numeroOrden,
       cliente: data,
+      estado: 'pendiente',
       carrito,
       total,
-      creadoEn: serverTimestamp()
+      creadoEn: serverTimestamp(),
     });
 
     const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total);
-    const numeroTelefono = numeroWhatsApp || '51944788568';
+    const numeroTelefono = numeroWhatsApp || "51944788568";
     const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
-    window.open(urlWhatsApp, '_blank');
-
+    window.open(urlWhatsApp, "_blank");
+    setLoading(false);
     setModalVisible(true);
   } catch (error) {
     console.error("Error al registrar la orden:", error);
   }
 };
+
 
   const finalizarCompra = () => {
     vaciarCarrito();
@@ -70,12 +119,12 @@ export default function CheckoutPage() {
             label="Nombre"
             name="nombre"
             register={register}
-            rules={{
+            rules={{ 
               required: "El nombre es obligatorio",
               pattern: {
-                value: /^[A-Za-z\s]+$/,
+                value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
                 message: "Solo se permiten letras",
-              },
+              }
             }}
             error={errors.nombre}
           />
@@ -83,12 +132,12 @@ export default function CheckoutPage() {
             label="Apellido"
             name="apellido"
             register={register}
-            rules={{
+            rules={{ 
               required: "El apellido es obligatorio",
               pattern: {
-                value: /^[A-Za-z\s]+$/,
+                value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
                 message: "Solo se permiten letras",
-              },
+              } 
             }}
             error={errors.apellido}
           />
@@ -119,24 +168,24 @@ export default function CheckoutPage() {
             error={errors.telefono}
           />
           <InputField
-            label="Email"
-            name="email"
-            register={register}
-            rules={{
-              required: "El email es obligatorio",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Email inválido",
-              },
-            }}
-            error={errors.email}
-          />
-          <InputField
             label="Dirección"
             name="direccion"
             register={register}
             rules={{ required: "La dirección es obligatoria" }}
             error={errors.direccion}
+          />
+           <InputField
+            label="Código Postal"
+            name="codigopostal"
+            register={register}
+            rules={{
+              required: "El código postal es obligatorio",
+              pattern: {
+                value: /^[0-9]{1,6}$/,
+                message: "Máximo 6 dígitos numéricos",
+              },
+            }}
+            error={errors.codigopostal}
           />
           <SelectField
             label="Ciudad"
@@ -144,7 +193,7 @@ export default function CheckoutPage() {
             options={ciudades}
             register={register}
             error={errors.ciudad}
-            rules={{ required: "Selecciona una ciudad" }}
+            required={true}
           />
           <SelectField
             label="Distrito"
@@ -152,7 +201,7 @@ export default function CheckoutPage() {
             options={distritos}
             register={register}
             error={errors.distrito}
-            rules={{ required: "Selecciona un distrito" }}
+            required={true}
           />
         </div>
 
@@ -171,14 +220,14 @@ export default function CheckoutPage() {
         <div className="pt-4">
           <button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || loading}
             className={`w-full py-3 rounded transition ${
-              isValid
+              isValid && !loading
                 ? "bg-black text-white hover:bg-gray-800"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            Enviar compra
+            {loading ? "Enviando..." : "Enviar compra"}
           </button>
         </div>
       </form>

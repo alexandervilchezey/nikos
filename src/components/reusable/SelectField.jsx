@@ -4,7 +4,7 @@ export default function SelectField({
   options = [],
   register,
   required = false,
-  error
+  error,
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -14,7 +14,7 @@ export default function SelectField({
       <select
         id={name}
         {...register(name, {
-          required: required && "Este campo es obligatorio",
+          required: required ? "Este campo es obligatorio" : false,
         })}
         className={`border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-black ${
           error ? "border-red-500" : "border-gray-300"

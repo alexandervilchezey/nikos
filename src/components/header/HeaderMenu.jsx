@@ -32,31 +32,37 @@ export default function HeaderUserMenu() {
     <div className="relative inline-block text-left" ref={menuRef}>
       <button
         onClick={toggleMenu}
-        className="text-black font-medium hover:underline"
+        className="cursor-pointer text-black font-medium hover:underline max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
       >
-        Hola, {user.displayName || user.email}
+        Hola, {user.displayName}
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
+        <div
+          className={`absolute right-0 w-48 bg-white border border-gray-200 shadow-md z-50
+            transition transform duration-200 ease-out origin-top scale-100 opacity-100
+            animate-fade-in`}
+        >
           <button
             onClick={() => {
               setOpen(false);
-              navigate('/perfil');
+              navigate('/mi-perfil');
             }}
-            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+            className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
           >
             Ver perfil
           </button>
+          <hr className="border-t border-gray-200" />
           <button
             onClick={() => {
               setOpen(false);
               navigate('/mis-compras');
             }}
-            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+            className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
           >
             Mis compras
           </button>
+          <hr className="border-t border-gray-200" />
           <button
             onClick={handleLogout}
             className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"

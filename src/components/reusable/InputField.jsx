@@ -2,10 +2,9 @@ export default function InputField({
   name,
   label,
   register,
-  required = false,
+  rules = {},
   type = "text",
-  pattern,
-  error
+  error,
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -15,10 +14,7 @@ export default function InputField({
       <input
         type={type}
         id={name}
-        {...register(name, {
-          required: required && "Este campo es obligatorio",
-          pattern: pattern
-        })}
+        {...register(name, rules)}
         className={`border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-black ${
           error ? "border-red-500" : "border-gray-300"
         }`}

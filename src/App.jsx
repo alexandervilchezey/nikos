@@ -16,6 +16,9 @@ import ResetPassword from './pages/ResetPassword';
 import EmailConfirmation from './pages/EmailConfirmation';
 import FirebaseRedirector from './firebase/FirebaseRedirector';
 import VerifyEmail from './pages/VerifyEmail';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import PerfilUsuario from './pages/PerfilUsuario';
+import ComprasUsuario from './pages/ComprasUsuario';
 
 function App() {
   const {
@@ -28,14 +31,14 @@ function App() {
     <div className="relative" style={{ minHeight: '100dvh' }}>
       <Routes>
         {/* 🔁 Manejo automático de los enlaces de Firebase */}
-        <Route path="/" element={<FirebaseRedirector />} />
+        <Route path="/redirect" element={<FirebaseRedirector />} />
 
         {/* 🔐 Autenticación y recuperación */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/reset" element={<ResetPassword />} />
-        <Route path="/verificar" element={<VerifyEmail />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/confirmar" element={<EmailConfirmation />} />
 
         {/* 🏠 Rutas dentro del layout */}
@@ -44,7 +47,24 @@ function App() {
           <Route path="productos" element={<ProductosPage />} />
           <Route path="productos/:slug" element={<Products />} />
           <Route path="checkout" element={<Checkout />} />
+          <Route
+            path="mi-perfil"
+            element={
+              <ProtectedRoute>
+                <PerfilUsuario />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="mis-compras"
+            element={
+              <ProtectedRoute>
+                <ComprasUsuario />
+              </ProtectedRoute>
+            }
+          />
         </Route>
+        
       </Routes>
 
       {/* 🛒 Modal carrito */}

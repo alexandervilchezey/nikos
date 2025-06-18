@@ -25,91 +25,104 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
       animatingClose={animatingClose}
       cerrarModalConAnimacion={cerrarModalConAnimacion}
     >
-      <div className="main-menu scrollto">
+      <div className="main-menu scrollto flex flex-col h-full">
         <nav className="wrapper">
-          <ul className="pt-2">
+          <ul className="pt-2 space-y-2">
             <li>
-              <a className="block" href="/nikos">
-                <span>Inicio</span>
+              <a className="block px-4 text-black" href="/nikos">Inicio</a>
+            </li>
+            <li>
+              <a className="block px-4 text-black" href="/nikos/productos">Productos</a>
+            </li>
+            <li>
+              <a
+                className="block px-4 text-black"
+                href="/nikos/#marcas"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Marcas
               </a>
             </li>
             <li>
-              <a className="block" href="/nikos/productos">
-                <span>Productos</span>
-              </a>
-            </li>
-            <li>
-              <a className="block" href="/nikos/#marcas" onClick={() => setIsMobileMenuOpen(false)}>
-                <span>Marcas</span>
-              </a>
-            </li>
-            <li>
-              <a className="block" href="#contacto" onClick={() => setIsMobileMenuOpen(false)}>
-                <span>Contacto</span>
+              <a
+                className="block px-4 text-black"
+                href="#contacto"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contacto
               </a>
             </li>
           </ul>
         </nav>
 
-        {/* MENÚ DE USUARIO */}
-        {user && (
-          <div className="border-t pt-4 px-4">
-            <button
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="w-full text-left text-black font-medium mb-2"
-            >
-              Hola, {user.displayName || user.email}
-            </button>
-
-            {isUserMenuOpen && (
-              <ul className="pl-2 text-sm text-gray-700 space-y-2">
-                <li>
-                  <button
-                    onClick={() => {
-                      navigate("/perfil");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left"
-                  >
-                    Ver perfil
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      navigate("/mis-compras");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left"
-                  >
-                    Mis compras
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={async () => {
-                      await signOut(auth);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-red-600"
-                  >
-                    Cerrar sesión
-                  </button>
-                </li>
-              </ul>
-            )}
+        {/* Login/Register para visitantes */}
+        {!user && (
+          <div className="mt-auto p-4 flex flex-col space-y-2 gap-2">
+            <a href="/nikos/login" className="btn secondary-btn text-center bg-black text-white py-2 rounded">Iniciar Sesión</a>
+            <a href="/nikos/register" className="btn primary-btn text-center border border-black py-2 text-black rounded">Registrarse</a>
           </div>
         )}
 
-        {/* BOTONES LOGIN/REGISTER */}
-        {!user && (
-          <div className="button mt-auto">
-            <a href="/nikos/login" className="btn secondary-btn">
-              Iniciar Sesión
-            </a>
-            <a href="/nikos/register" className="btn primary-btn">
-              Registrarse
-            </a>
+        {/* Menú de usuario */}
+        {user && (
+          <div className="mt-auto border-t border-gray-200 px-4 pt-4">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="w-full flex justify-between items-center text-black font-medium text-left truncate"
+            >
+              <span className="truncate max-w-[80%]" title={user.displayName || user.email}>
+                Hola, {user.displayName || user.email}
+              </span>
+              <svg
+                className={`w-4 h-4 transition-transform duration-300 ${isUserMenuOpen ? "rotate-180" : "rotate-0"}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <ul
+              className={`mt-3 space-y-2 text-sm text-gray-800 overflow-hidden transition-all duration-300 ${
+                isUserMenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              <li>
+                <button
+                  onClick={() => {
+                    navigate("/mi-perfil");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+                >
+                  Ver perfil
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    navigate("/mis-compras");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+                >
+                  Mis compras
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={async () => {
+                    await signOut(auth);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-red-600 hover:bg-gray-100 px-2 py-1 rounded"
+                >
+                  Cerrar sesión
+                </button>
+              </li>
+            </ul>
           </div>
         )}
       </div>
