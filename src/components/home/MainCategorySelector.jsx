@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function MainCategorySelector({ options, initial, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(initial);
+
+  useEffect(() => {
+    setSelected(initial);
+  }, [initial]); // Se actualiza si cambia `initial`
 
   const handleSelect = (option) => {
     setSelected(option);
@@ -16,19 +20,19 @@ export default function MainCategorySelector({ options, initial, onSelect }) {
         className="opt-trigger cursor-pointer flex items-center gap-2"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="value font-medium">{selected.nombre}</span>
+        <span className="value font-medium">{selected?.nombre}</span>
         <i className="bx bx-chevron-down text-[20px]"></i>
       </h3>
 
       {isOpen && (
         <ul className="absolute mt-2 bg-white border border-gray-300 shadow-md z-10 min-w-[120px]">
           {options.map((option) => (
-            <li key={option.id}
-              className='text-[1rem]'
-            >
+            <li key={option.id || option.nombre} className="text-[1rem]">
               <button
                 className={`tabbed-trigger px-4 py-2 block w-full text-left hover:bg-black hover:text-white ${
-                  selected === option ? 'font-semibold bg-black text-white' : ''
+                  selected?.nombre === option.nombre
+                    ? 'font-semibold bg-black text-white'
+                    : ''
                 }`}
                 onClick={() => handleSelect(option)}
               >

@@ -1,7 +1,21 @@
 import { useState } from "react";
 
-export default function ProductDescription({producto}) {
+export default function ProductDescription({ producto }) {
   const [activeTab, setActiveTab] = useState('description');
+
+  // Aplanar variantes para colores y tallas con stock
+  const colores = producto.variantes?.map((v) => ({
+    nombre: v.color,
+    codigo: v.codigoColor
+  })) || [];
+
+  const tallasConStock = producto.variantes?.flatMap((v) =>
+    v.tallas.map((t) => ({
+      talla: t.talla,
+      stock: t.stock,
+      color: v.color
+    }))
+  ) || [];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -43,10 +57,17 @@ export default function ProductDescription({producto}) {
             <p className="text-base">{producto.descripcion}</p>
             <ul className="list-disc list-inside mt-4 space-y-1">
               <li><strong>Marca:</strong> {producto.marca}</li>
-              <li><strong>Precio:</strong> ${producto.precio} <span className="text-sm text-red-500 ml-2">-{producto.descuento}% OFF</span></li>
+              <li>
+                <strong>Precio:</strong> s/.{producto.precio}
+                {producto.precioDescuento && (
+                  <span className="text-sm text-red-500 ml-2">
+                    -{Math.round(100 - (producto.precioDescuento / producto.precio) * 100)}% OFF
+                  </span>
+                )}
+              </li>
               <li><strong>Usuario:</strong> {producto.usuario}</li>
-              <li><strong>Uso:</strong> {producto.uso.join(', ')}</li>
-              <li><strong>Tipo de calzado:</strong> {producto.tipoCalzado.join(', ')}</li>
+              <li><strong>Uso:</strong> {producto.uso?.join(', ')}</li>
+              <li><strong>Tipo de calzado:</strong> {producto.tipoCalzado}</li>
               <li><strong>Origen:</strong> {producto.origen}</li>
             </ul>
 
@@ -54,12 +75,12 @@ export default function ProductDescription({producto}) {
             <div className="mt-4">
               <h4 className="font-semibold mb-2">Colores disponibles:</h4>
               <div className="flex gap-2">
-                {producto.colores.map((color, index) => (
+                {colores.map((c, index) => (
                   <div
                     key={index}
                     className="w-6 h-6 rounded-full border border-gray-300"
-                    style={{ backgroundColor: color }}
-                    title={color}
+                    style={{ backgroundColor: c.codigo }}
+                    title={c.nombre}
                   ></div>
                 ))}
               </div>
@@ -69,14 +90,16 @@ export default function ProductDescription({producto}) {
             <div className="mt-4">
               <h4 className="font-semibold mb-2">Stock por talla:</h4>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(producto.stockPorTalla).map(([talla, stock]) => (
+                {tallasConStock.map(({ talla, stock, color }, index) => (
                   <div
-                    key={talla}
+                    key={`${talla}-${index}`}
                     className={`px-3 py-1 rounded border text-sm ${
-                      stock > 0 ? 'bg-green-100 border-green-500 text-green-700' : 'bg-gray-200 text-gray-500 line-through'
+                      stock > 0
+                        ? 'bg-green-100 border-green-500 text-green-700'
+                        : 'bg-gray-200 text-gray-500 line-through'
                     }`}
                   >
-                    Talla {talla}: {stock} {stock === 1 ? 'unidad' : 'unidades'}
+                    {talla} ({color}): {stock} {stock === 1 ? 'unidad' : 'unidades'}
                   </div>
                 ))}
               </div>
@@ -88,9 +111,9 @@ export default function ProductDescription({producto}) {
           <>
             <h3 className="text-xl font-bold">Información adicional</h3>
             <ul className="list-disc list-inside space-y-2">
-              <li><strong>Materiales:</strong> {producto.material.join(', ')}</li>
+              <li><strong>Materiales:</strong> {producto.material?.join(', ')}</li>
               <li><strong>Fecha de agregado:</strong> {new Date(producto.fechaAgregado * 1000).toLocaleDateString()}</li>
-              <li><strong>Etiquetas:</strong> {producto.etiquetas.join(', ')}</li>
+              <li><strong>Etiquetas:</strong> {producto.etiquetas?.join(', ')}</li>
               <li><strong>Destacado:</strong> {producto.destacado ? 'Sí' : 'No'}</li>
               <li><strong>Slug:</strong> <code>{producto.slug}</code></li>
               <li><strong>ID del producto:</strong> {producto.id}</li>
@@ -100,4 +123,4 @@ export default function ProductDescription({producto}) {
       </div>
     </div>
   );
-};
+}

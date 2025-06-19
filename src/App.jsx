@@ -4,11 +4,7 @@ import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductosPage from './pages/ProductosPage';
-import { useModalCarrito } from "./components/carrito/CarritoContext";
-import ModalFiltros from "./components/reusable/ModalFiltros";
-import CarritoModal from "./components/carrito/CarritoModal";
 import Checkout from './pages/Checkout';
-import WhatsappFloat from './components/reusable/WhatsappFloat';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -19,13 +15,11 @@ import VerifyEmail from './pages/VerifyEmail';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PerfilUsuario from './pages/PerfilUsuario';
 import ComprasUsuario from './pages/ComprasUsuario';
+import AdminLayout from './admin/AdminLayout';
+import Dashboard from './admin/Dashboard';
+import ProductosAdmin from './admin/ProductosAdmin';
 
 function App() {
-  const {
-    mostrarCarrito,
-    animatingClose,
-    cerrarModalConAnimacion
-  } = useModalCarrito();
 
   return (
     <div className="relative" style={{ minHeight: '100dvh' }}>
@@ -64,21 +58,15 @@ function App() {
             }
           />
         </Route>
-        
+
+         {/* 🏠 Rutas del Admin page */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="productos" element={<ProductosAdmin />} />
+          {/* <Route path="ventas" element={<Ventas />} /> */}
+        </Route>
+          
       </Routes>
-
-      {/* 🛒 Modal carrito */}
-      <ModalFiltros
-        mostrarModalFiltros={mostrarCarrito}
-        animatingClose={animatingClose}
-        cerrarModalConAnimacion={cerrarModalConAnimacion}
-        direction="right"
-        width="w-[500px]"
-      >
-        <CarritoModal />
-      </ModalFiltros>
-
-      <WhatsappFloat />
     </div>
   );
 }

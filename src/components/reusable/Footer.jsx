@@ -4,7 +4,7 @@ export default function Footer() {
     <footer className="bg-black text-gray-200 py-6 mt-10">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
-          <h2 className="title-footer text-2xl font-bold mb-2">Nikos</h2>
+          <h2 className="title-footer text-2xl font-bold mb-2 font-[Anton] uppercase italic text-[40px]">Nikos</h2>
           <p className="text-sm">Vendemos productos únicos para personas únicas. Calidad, estilo y funcionalidad en uno solo.</p>
         </div>
         <div>
@@ -41,7 +41,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm">
-        v.1.0.4 © {new Date().getFullYear()} Nikos. Todos los derechos reservados. 
+        v.1.0.5 © {new Date().getFullYear()} Nikos. Todos los derechos reservados. 
       </div>
     </footer>
     </div>

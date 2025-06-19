@@ -4,6 +4,7 @@ import Footer from '../components/reusable/Footer'
 import ModalFiltros from "../components/reusable/ModalFiltros";
 import CarritoModal from "../components/carrito/CarritoModal";
 import { useModalCarrito } from "../components/carrito/CarritoContext";
+import WhatsappFloat from '../components/reusable/WhatsappFloat';
 
 export default function Layout() {
   const { mostrarCarrito, animatingClose, cerrarModalConAnimacion } = useModalCarrito();
@@ -22,6 +23,7 @@ export default function Layout() {
         >
           <CarritoModal />
         </ModalFiltros>
+        <WhatsappFloat />
     </>
   );
 }

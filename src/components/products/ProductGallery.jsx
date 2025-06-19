@@ -6,8 +6,16 @@ import "swiper/css/thumbs";
 import "swiper/css/pagination";
 import { FreeMode, Thumbs, Pagination } from "swiper/modules";
 
-export default function ProductGallery({producto}) {
+// Importa tu imagen de respaldo
+import placeholder from '../../assets/images/no-photo.JPG';
+
+export default function ProductGallery({ producto }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  // Asegura que haya al menos una imagen
+  const imagenes = Array.isArray(producto.imagenes) && producto.imagenes.length > 0
+    ? producto.imagenes
+    : [placeholder];
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 max-w-3xl">
@@ -23,7 +31,7 @@ export default function ProductGallery({producto}) {
           watchSlidesProgress
           className="h-full"
         >
-          {producto.imagenes.map((src, index) => (
+          {imagenes.map((src, index) => (
             <SwiperSlide key={index}>
               <img
                 src={src}
@@ -34,6 +42,7 @@ export default function ProductGallery({producto}) {
           ))}
         </Swiper>
       </div>
+
       {/* Galería principal */}
       <Swiper
         thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
@@ -42,9 +51,13 @@ export default function ProductGallery({producto}) {
         pagination={{ clickable: true }}
         className="w-full max-w-full md992:max-w-[500px] h-full md992:h-[500px] rounded-md overflow-hidden bg-white"
       >
-        {producto.imagenes.map((src, index) => (
+        {imagenes.map((src, index) => (
           <SwiperSlide key={index}>
-            <img src={src} className="object-contain md:object-left w-full h-full" alt={`Imagen ${index}`} />
+            <img
+              src={src}
+              className="object-contain md:object-left w-full h-full"
+              alt={`Imagen ${index}`}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, increment, setDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 export const obtenerNuevoNumeroOrden = async () => {
@@ -30,4 +30,30 @@ export const generarMensajeWhatsApp = (numeroOrden, data, carrito, total) => {
 ${productosTexto}
 
  Total: S/. ${total}`;
+};
+
+export const generarSlugBase = (nombre) => {
+  return nombre
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
+export const generarSlugUnico = async (nombre, idExistente = null) => {
+  const base = generarSlugBase(nombre);
+  let slug = base;
+  let contador = 1;
+
+  while (true) {
+    const q = query(collection(db, 'productos'), where('slug', '==', slug));
+    const snapshot = await getDocs(q);
+    const existe = snapshot.docs.find(doc => doc.id !== idExistente);
+    if (!existe) break;
+    slug = `${base}-${contador++}`;
+  }
+
+  return slug;
 };
