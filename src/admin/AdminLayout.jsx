@@ -24,7 +24,7 @@ export default function AdminLayout() {
   return (
     <div className="flex h-screen bg-white text-black">
       {/* Sidebar */}
-      <aside className={`flex flex-col bg-black text-white p-4 ${isCollapsed ? 'w-16' : 'w-64 absolute md:relative h-full'} transition-all duration-300`}>
+      <aside className={`z-10 flex flex-col bg-black text-white p-4 ${isCollapsed ? 'w-16' : 'w-64 absolute md:relative h-full'} transition-all duration-300`}>
         <div className="flex items-center justify-between mb-6">
           {!isCollapsed && (
             <div className='flex items-center justify-center font-[Anton] uppercase italic text-[40px]'>Nikos</div>
@@ -41,9 +41,9 @@ export default function AdminLayout() {
             <i className="bx bx-dashboard text-lg"></i>
             {!isCollapsed && 'Dashboard'}
           </Link>
-          <Link to="/admin/ventas" className="hover:text-gray-300 flex items-center gap-2 text-lg">
-            <i className="bx bx-receipt text-lg"></i>
-            {!isCollapsed && 'Ventas'}
+          <Link to="/admin/filtros" className="hover:text-gray-300 flex items-center gap-2 text-lg">
+            <i className='bx bx-menu-filter text-lg'></i> 
+            {!isCollapsed && 'Filtros'}
           </Link>
           <Link to="/admin/productos" className="hover:text-gray-300 flex items-center gap-2 text-lg">
             <i className="bx bx-box text-lg"></i>

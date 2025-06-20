@@ -9,6 +9,9 @@ export default function ProductSummary({ producto }) {
   const [countProducts, setCountProducts] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [errorMensaje, setErrorMensaje] = useState('');
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [agregando, setAgregando] = useState(false);
 
   const shareLink = window.location.href;
 
@@ -20,9 +23,12 @@ export default function ProductSummary({ producto }) {
 
   const handleAgregar = (producto) => {
     if (!tallaSelected || !colorSelected) {
-      alert("Selecciona talla y color");
+      setErrorMensaje("Selecciona talla y color");
       return;
     }
+
+    setErrorMensaje('');
+    setAgregando(true);
 
     const item = {
       slug: producto.slug,
@@ -31,13 +37,17 @@ export default function ProductSummary({ producto }) {
       talla: tallaSelected,
       color: colorSelected,
       cantidad: parseInt(countProducts),
-      precio: producto.precio,
+      precio: producto.precioDescuento || producto.precio,
     };
-    console.log(item);
+
     agregarAlCarrito(item);
+    setMensajeExito('Producto añadido al carrito');
+    setTimeout(() => {
+      setMensajeExito('');
+      setAgregando(false);
+    }, 2000);
   };
 
-  // obtener variante seleccionada
   const varianteSeleccionada = producto.variantes?.find(v => v.codigoColor === colorSelected);
 
   return (
@@ -65,10 +75,11 @@ export default function ProductSummary({ producto }) {
               <button
                 key={index}
                 style={{ backgroundColor: variante.codigoColor }}
-                className={`border rounded-full transition-shadow relative w-10 h-10 ${colorSelected === variante.codigoColor ? 'selected shadow-[inset_0_0_0_4px_var(--white-color)]' : ''}`}
+                className={`cursor-pointer border rounded-full transition-shadow relative w-10 h-10 ${colorSelected === variante.codigoColor ? 'selected shadow-[inset_0_0_0_4px_var(--white-color)]' : ''}`}
                 onClick={() => {
                   setColorSelected(variante.codigoColor);
                   setTallaSelected('');
+                  setErrorMensaje('');
                 }}
               ></button>
             ))}
@@ -82,10 +93,15 @@ export default function ProductSummary({ producto }) {
               {varianteSeleccionada?.tallas?.map(({ talla, stock }) => (
                 <button
                   key={talla}
-                  onClick={() => stock > 0 && setTallaSelected(talla)}
+                  onClick={() => {
+                    if (stock > 0) {
+                      setTallaSelected(talla);
+                      setErrorMensaje('');
+                    }
+                  }}
                   disabled={stock === 0}
                   className={`px-3 py-1 border rounded mx-1 my-1 
-                    ${stock === 0 ? 'no-size' : ''} 
+                    ${stock === 0 ? 'opacity-50 cursor-not-allowed bg-gray-200 text-gray-500' : 'cursor-pointer'} 
                     ${tallaSelected === talla ? 'selected' : ''}`}
                 >
                   {talla}
@@ -95,28 +111,37 @@ export default function ProductSummary({ producto }) {
           </div>
         )}
 
-        <div className="product-action flex gap-6 justify-left items-center">
+        <div className="product-action flex gap-6 justify-left items-center mt-2">
           <div className="qty flex flex-wrap">
-            <button onClick={() => setCountProducts((prev) => Math.max(1, prev - 1))} className="decrease h-[40px] w-[40px] bg-[#f1f1f1]">-</button>
+            <button onClick={() => setCountProducts((prev) => Math.max(1, prev - 1))} className="cursor-pointer decrease h-[40px] w-[40px] bg-[#f1f1f1]">-</button>
             <input className="w-[50px] border text-center" readOnly type="number" value={countProducts} />
-            <button onClick={() => setCountProducts((prev) => prev + 1)} className="increase h-[40px] w-[40px] bg-[#f1f1f1]">+</button>
+            <button onClick={() => setCountProducts((prev) => prev + 1)} className="cursor-pointer increase h-[40px] w-[40px] bg-[#f1f1f1]">+</button>
           </div>
 
           <div className="addcart button">
             <button
               onClick={() => handleAgregar(producto)}
-              type="submit"
-              className="btn primary-btn"
+              type="button"
+              className="cursor-pointer btn primary-btn min-w-[201px]"
+              disabled={agregando}
             >
-              Añadir al carrito
+              {agregando ? 'Agregando...' : 'Añadir al carrito'}
             </button>
           </div>
         </div>
 
+        {errorMensaje && (
+          <p className="text-sm text-red-600 m-0">{errorMensaje}</p>
+        )}
+
+        {mensajeExito && (
+          <p className="text-sm text-green-600 m-0">{mensajeExito}</p>
+        )}
+
         <div className="product-control list-inline mt-4">
           <ul>
             <li>
-              <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1">
+              <button onClick={() => setIsModalOpen(true)} className="cursor-pointer flex items-center gap-1">
                 <i className='bx bx-share'></i>
                 <span>Compartir Producto</span>
               </button>

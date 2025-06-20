@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../firebase/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import ProductoModal from '../components/admin/ProductoModal';
+import Modal from '../components/reusable/Modal';
 
 export default function ProductosAdmin() {
   const [productos, setProductos] = useState([]);
@@ -12,11 +13,12 @@ export default function ProductosAdmin() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [productoEdit, setProductoEdit] = useState(null);
+  const [modalEliminar, setModalEliminar] = useState(false);
 
   const abrirNuevo = () => {
     setProductoEdit(null);
     setTimeout(() => {
-        setIsOpen(true);
+      setIsOpen(true);
     }, 0);
   };
 
@@ -25,11 +27,16 @@ export default function ProductosAdmin() {
     setIsOpen(true);
   };
 
-  const eliminar = async (id) => {
-    if (confirm('¿Seguro que deseas eliminar este producto?')) {
-      await deleteDoc(doc(db, 'productos', id));
-      setProductos((prev) => prev.filter((p) => p.id !== id));
-    }
+  const confirmarEliminar = (producto) => {
+    setProductoEdit(producto);
+    setModalEliminar(true);
+  };
+
+  const eliminar = async () => {
+    if (!productoEdit) return;
+    await deleteDoc(doc(db, 'productos', productoEdit.id));
+    setProductos((prev) => prev.filter((p) => p.id !== productoEdit.id));
+    setModalEliminar(false);
   };
 
   useEffect(() => {
@@ -108,13 +115,13 @@ export default function ProductosAdmin() {
                     onClick={() => editar(producto)}
                     className="p-2 text-blue-600 hover:underline"
                   >
-                    <i class='bx bx-pencil'></i> 
+                    <i className='bx bx-pencil'></i>
                   </button>
                   <button
-                    onClick={() => eliminar(producto.id)}
+                    onClick={() => confirmarEliminar(producto)}
                     className="p-2 text-red-600 hover:underline"
                   >
-                    <i class='bx bx-trash'></i> 
+                    <i className='bx bx-trash'></i>
                   </button>
                 </td>
               </tr>
@@ -146,6 +153,29 @@ export default function ProductosAdmin() {
         onClose={() => setIsOpen(false)}
         editarProducto={productoEdit}
       />
+
+      <Modal isOpen={modalEliminar} onClose={() => setModalEliminar(false)}>
+            <div className="w-full max-w-md relative">
+            <h2 className="text-xl font-semibold mb-2">Eliminar producto</h2>
+            <p className="mb-4">¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setModalEliminar(false)}
+                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+              >
+                No, cancelar
+              </button>
+              <button
+                onClick={eliminar}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Sí, eliminar
+              </button>
+            </div>
+          </div>
+      </Modal>
+
+      
     </div>
   );
 }

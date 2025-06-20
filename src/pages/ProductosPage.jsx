@@ -10,6 +10,7 @@ import { db } from "../firebase/firebase";
 
 import ModalFiltros from "../components/reusable/ModalFiltros";
 import Filtros from "../components/products/Filtros";
+import placeholder from '../assets/images/no-photo.JPG';
 
 export default function ProductosPage() {
   const [filters, setFilters] = useState({
@@ -199,7 +200,7 @@ export default function ProductosPage() {
                 >
                   <div className="w-full aspect-square overflow-hidden">
                     <img
-                      src={producto.imagenes?.[0] || 'https://via.placeholder.com/400'}
+                      src={producto.imagenes?.[0] || placeholder}
                       alt={producto.nombre}
                       className="w-full h-full object-cover"
                     />

@@ -18,6 +18,7 @@ import ComprasUsuario from './pages/ComprasUsuario';
 import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import ProductosAdmin from './admin/ProductosAdmin';
+import FiltrosAdmin from './admin/FiltrosAdmin';
 
 function App() {
 
@@ -63,6 +64,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="productos" element={<ProductosAdmin />} />
+          <Route path="filtros" element={<FiltrosAdmin />} />
           {/* <Route path="ventas" element={<Ventas />} /> */}
         </Route>
           

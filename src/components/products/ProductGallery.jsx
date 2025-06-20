@@ -6,7 +6,6 @@ import "swiper/css/thumbs";
 import "swiper/css/pagination";
 import { FreeMode, Thumbs, Pagination } from "swiper/modules";
 
-// Importa tu imagen de respaldo
 import placeholder from '../../assets/images/no-photo.JPG';
 
 export default function ProductGallery({ producto }) {

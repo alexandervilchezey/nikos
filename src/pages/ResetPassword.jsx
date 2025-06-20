@@ -69,9 +69,9 @@ export default function ResetPassword() {
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500"
           >
             {showPassword ? (
-              <i class='bx  bx-eye-slash h-5 w-5'></i> 
+              <i className='bx  bx-eye-slash h-5 w-5'></i> 
             ) : (
-              <i class='bx bx-eye h-5 w-5'></i>
+              <i className='bx bx-eye h-5 w-5'></i>
             )}
           </button>
         </div>
@@ -91,9 +91,9 @@ export default function ResetPassword() {
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500"
           >
             {showConfirm ? (
-              <i class='bx  bx-eye-slash h-5 w-5'></i> 
+              <i className='bx  bx-eye-slash h-5 w-5'></i> 
             ) : (
-              <i class='bx bx-eye h-5 w-5'></i>
+              <i className='bx bx-eye h-5 w-5'></i>
             )}
           </button>
         </div>

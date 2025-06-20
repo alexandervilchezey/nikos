@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import Select from 'react-select';
+import { useForm } from 'react-hook-form';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { generarSlugUnico } from '../../utils/generalFunctions';
@@ -24,6 +23,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
   const [variantes, setVariantes] = useState([]);
   const [etiquetaInput, setEtiquetaInput] = useState('');
   const [etiquetas, setEtiquetas] = useState([]);
+  const [errorVariantes, setErrorVariantes] = useState(null);
 
   const {
     register,
@@ -123,6 +123,27 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
     setVariantes([...variantes, { color: '', codigoColor: '#000000', tallas: [] }]);
   };
 
+  const validarVariantes = () => {
+    if (variantes.length === 0) {
+      setErrorVariantes('Debes agregar al menos una variante.');
+      return false;
+    }
+    for (const v of variantes) {
+      if (!v.color || !v.codigoColor || !Array.isArray(v.tallas) || v.tallas.length === 0) {
+        setErrorVariantes('Cada variante debe tener color, código de color y al menos una talla.');
+        return false;
+      }
+      for (const t of v.tallas) {
+        if (!t.talla || t.stock === undefined || t.stock === null || t.stock === '') {
+          setErrorVariantes('Cada talla debe tener un valor de talla y stock.');
+          return false;
+        }
+      }
+    }
+    setErrorVariantes(null);
+    return true;
+  };
+
   const eliminarVariante = (idx) => {
     setVariantes(variantes.filter((_, i) => i !== idx));
   };
@@ -153,6 +174,8 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
 
   // ================= SUBMIT =================
   const onSubmit = async (data) => {
+    if (!validarVariantes()) return;
+
     setSubiendo(true);
     try {
       const urls = imagenes.length > 0
@@ -198,11 +221,14 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white w-full max-w-3xl rounded-lg p-6 shadow relative max-h-[90vh] overflow-y-auto">
-        <button onClick={onClose} className="absolute top-3 right-4 text-gray-600 text-xl hover:text-black">×</button>
-        <h2 className="text-xl font-semibold mb-4">{editarProducto ? 'Editar' : 'Nuevo'} Producto</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-opacity-50 backdrop-blur-sm transition-opacity"></div>
+
+      <div className="bg-white w-full max-w-3xl rounded-lg p-6 shadow relative max-h-[90vh] flex flex-col">
+        <h2 className="text-xl font-semibold mb-4">
+          {editarProducto ? 'Editar' : 'Nuevo'} Producto
+        </h2>
+        <form onSubmit={handleSubmit(onSubmit)} id='form-producto' className="space-y-4 flex-1 overflow-y-auto pr-1">
           {/* Campos básicos */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
@@ -334,6 +360,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
           {/* Variantes */}
           <div className='my-2'>
             <h3 className="text-md font-semibold mb-2">Variantes por color y talla</h3>
+            {errorVariantes && <p className="text-red-500 text-sm mb-2">{errorVariantes}</p>}
             {variantes.map((v, i) => (
               <div key={i} className="border p-3 rounded mb-3">
                 <div className="flex gap-2 mb-2">
@@ -353,16 +380,29 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
             ))}
             <button type="button" onClick={agregarVariante} className="bg-gray-100 text-sm px-3 py-1 rounded hover:bg-gray-200">+ Agregar variante</button>
           </div>
-
-          <div className='flex flex-row justify-end gap-2'>
-            <button type="submit" disabled={subiendo} className="bg-black text-white p-2 rounded hover:bg-gray-800 transition">
-              {subiendo ? 'Guardando...' : 'Guardar Producto'}
-            </button>
-            <button type="button" onClick={onClose} className="bg-red-500 text-white p-2 rounded transition">
-              {'Cancelar'}
-            </button>
-          </div>
         </form>
+        <div className="sticky bottom-0 left-0 bg-white pt-4 mt-4 pb-2 border-t border-gray-200 flex justify-end gap-2 z-10">
+          <button
+            type="submit"
+            form="form-producto"
+            disabled={subiendo}
+            className={`bg-black text-white p-2 rounded hover:bg-gray-800 transition ${
+              subiendo ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {subiendo ? 'Guardando...' : 'Guardar Producto'}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={subiendo}
+            className={`bg-red-500 text-white p-2 rounded transition ${
+              subiendo ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCarrito, useModalCarrito } from "./CarritoContext";
 import { useNavigate } from "react-router-dom";
+import placeholder from '../../assets/images/no-photo.JPG';
 
 export default function CarritoModal() {
   const {
@@ -60,12 +61,12 @@ export default function CarritoModal() {
               className="flex gap-4 bg-white py-2 relative"
             >
               <img
-                src={item.imagen}
+                src={item.imagen || placeholder}
                 alt={item.nombre}
                 className="w-20 h-20 object-cover rounded border"
               />
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-800">{item.nombre}</h3>
+                <h3 className="font-semibold text-gray-800 cursor-pointer" onClick={() => navigate(`/productos/${item.slug}`)}>{item.nombre}</h3>
                 <div className="text-sm text-gray-600 flex">
                   Talla: <span className="font-medium px-1">{item.talla}</span> | Color: {" "}
                   <div className="rounded-full h-[20px] w-[20px] border mx-1" style={{backgroundColor: item.color}}></div>

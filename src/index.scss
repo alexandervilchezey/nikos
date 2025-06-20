@@ -118,6 +118,11 @@ input[type=number] {
       background-color: var(--dark-color);
       color: var(--white-color);
     }
+    &:disabled{
+      background-color: var(--light-color);
+      color: var(--white-color);
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -897,7 +902,6 @@ nav.menu :where(.sub-mega){
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    cursor: pointer;
   }
 }
 

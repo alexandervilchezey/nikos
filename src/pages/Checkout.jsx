@@ -8,6 +8,7 @@ import ubicacionesPeru from "../utils/ubicacionesPeru";
 import { collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase";
 import { generarMensajeWhatsApp, obtenerNuevoNumeroOrden } from "../utils/generalFunctions";
+import placeholder from '../assets/images/no-photo.JPG';
 
 const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
 
@@ -238,15 +239,16 @@ useEffect(() => {
         {carrito.map((item, idx) => (
           <div key={idx} className="flex items-center gap-4 mb-3 border-b pb-2">
             <img
-              src={item.imagen}
+              src={item.imagen || placeholder}
               alt={item.nombre}
               className="w-16 h-16 object-cover rounded"
             />
             <div className="flex-1">
               <h3 className="font-semibold">{item.nombre}</h3>
-              <p className="text-sm text-gray-600">
-                Talla: {item.talla} | Color: {item.color}
-              </p>
+              <div className="text-sm text-gray-600 flex">
+                Talla: {item.talla} | Color: 
+                <div className="rounded-full h-[20px] w-[20px] border mx-1" style={{backgroundColor: item.color}}></div>
+              </div>
               <p className="text-sm text-gray-600">Cantidad: {item.cantidad}</p>
               <p className="text-sm text-gray-800 font-medium">
                 S/ {item.precio * item.cantidad}
@@ -254,7 +256,7 @@ useEffect(() => {
             </div>
           </div>
         ))}
-        <div className="mt-4 pt-4 border-t text-right font-bold text-lg">
+        <div className="mt-4 pt-4 text-right font-bold text-lg">
           Total: S/ {total.toFixed(2)}
         </div>
         <p className="text-xs text-gray-600 mt-1 text-right">* No incluye delivery</p>

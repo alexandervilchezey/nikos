@@ -1,24 +1,40 @@
 import { useState, useEffect } from 'react';
+import { db } from '../../firebase/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import HeaderLeft from '../header/HeaderLeft';
 import HeaderCenter from '../header/HeaderCenter';
 import HeaderRight from '../header/HeaderRight';
 import SearchFloat from '../header/SearchFloat';
-import Overlay from '../header/Overlay';
 import MobileMenu from '../header/MobileMenu';
-import dataProductos from "../../utils/dataProductos";
 
 export default function Header() {
-  // const [isBigSubmenuOpen, setIsBigSubMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSubmenuOpen, setIsSubMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [productos, setProductos] = useState([]);
+
+  useEffect(() => {
+    const obtenerProductos = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "productos"));
+        const data = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProductos(data);
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
+      }
+    };
+
+    obtenerProductos();
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 992px)');
     const handleResize = (e) => {
       if (e.matches) {
         setIsMobileMenuOpen(false);
-        // setIsBigSubMenuOpen(false);
       }
     };
     mediaQuery.addListener(handleResize);
@@ -32,21 +48,17 @@ export default function Header() {
           <div className="wide">
             <div className="wrap">
               <HeaderLeft setIsMobileMenuOpen={setIsMobileMenuOpen} />
-              <HeaderCenter
-                // isBigSubmenuOpen={isBigSubmenuOpen}
-                // setIsBigSubMenuOpen={setIsBigSubMenuOpen}
-              />
+              <HeaderCenter />
               <HeaderRight setIsSearchOpen={setIsSearchOpen} />
             </div>
           </div>
           <SearchFloat
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
-            productos={dataProductos}
+            productos={productos}
           />
         </div>
       </header>
-      {/* <Overlay isActive={isSearchOpen || isMobileMenuOpen} /> */}
       <MobileMenu
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}

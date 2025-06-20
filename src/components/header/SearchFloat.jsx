@@ -1,28 +1,54 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Fuse from "fuse.js";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
 export default function SearchFloat({ isSearchOpen, setIsSearchOpen, productos }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [resultados, setResultados] = useState([]);
+  const [cargandoRemoto, setCargandoRemoto] = useState(false);
   const navigate = useNavigate();
 
   const fuse = useMemo(() => {
     return new Fuse(productos, {
-      keys: [
-        "nombre",
-        "descripcion",
-        "marca",
-        "etiquetas",
-        "tipoCalzado",
-        "uso",
-        "material",
-        "origen"
-      ],
+      keys: ["nombre", "descripcion", "marca", "etiquetas", "tipoCalzado", "uso", "material", "origen"],
       threshold: 0.3,
       includeMatches: true,
     });
   }, [productos]);
+
+  // debounce casero
+  const debounce = (fn, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const buscarProductos = useCallback(
+    debounce(async (term) => {
+      if (productos.length > 0) {
+        const resultadosFuse = fuse.search(term);
+        setResultados(resultadosFuse);
+      } else {
+        setCargandoRemoto(true);
+        const productosRef = collection(db, "productos");
+        const querySnapshot = await getDocs(productosRef); // puedes optimizar con 'where' si tienes índices
+        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const fuseRemoto = new Fuse(data, {
+          keys: ["nombre", "descripcion", "marca", "etiquetas", "tipoCalzado", "uso", "material", "origen"],
+          threshold: 0.3,
+          includeMatches: true,
+        });
+        const resultadosRemotos = fuseRemoto.search(term);
+        setResultados(resultadosRemotos);
+        setCargandoRemoto(false);
+      }
+    }, 300),
+    [fuse, productos]
+  );
 
   useEffect(() => {
     if (!isSearchOpen) {
@@ -37,9 +63,8 @@ export default function SearchFloat({ isSearchOpen, setIsSearchOpen, productos }
       return;
     }
 
-    const resultadosFuse = fuse.search(term);
-    setResultados(resultadosFuse);
-  }, [searchTerm, isSearchOpen, fuse]);
+    buscarProductos(term);
+  }, [searchTerm, isSearchOpen, buscarProductos]);
 
   useEffect(() => {
     document.body.style.overflow = isSearchOpen ? "hidden" : "";
@@ -86,31 +111,40 @@ export default function SearchFloat({ isSearchOpen, setIsSearchOpen, productos }
             {searchTerm.trim() !== "" && (
               <div className="bg-white max-h-[calc(100vh-10rem)] overflow-y-auto border-t border-gray-200 shadow rounded-b-md flex flex-col">
                 <ul className="divide-y divide-gray-100 flex-1 overflow-y-auto">
-                  {resultados.length > 0 ? (
-                    resultados.map(({ item, matches }) => (
-                      <li
-                        key={item.id}
-                        className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 transition"
-                        onClick={() => {
-                          navigate(`/productos/${item.slug}`);
-                          closeSearch();
-                        }}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <i className="bx bx-sneaker text-gray-400 text-base"></i>
-                          <span
-                            className="truncate"
-                            dangerouslySetInnerHTML={{
-                              __html: highlightMatch(item.nombre, matches?.find(m => m.key === "nombre") ? [matches.find(m => m.key === "nombre")] : [])
-                            }}
-                          ></span>
-                        </div>
-                      </li>
-                    ))
+                  {cargandoRemoto ? (
+                    <li className="px-4 py-4 text-sm text-gray-500 text-center">Buscando...</li>
                   ) : (
-                    <li className="px-4 py-4 text-sm text-gray-500 text-center">
-                      No encontramos el producto que buscas.
-                    </li>
+                    <>
+                      {resultados.length > 0 ? (
+                        resultados.map(({ item, matches }) => (
+                          <li
+                            key={item.id}
+                            className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 transition"
+                            onClick={() => {
+                              navigate(`/productos/${item.slug}`);
+                              closeSearch();
+                            }}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <i className="bx bx-sneaker text-gray-400 text-base"></i>
+                              <span
+                                className="truncate"
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightMatch(
+                                    item.nombre,
+                                    matches?.find((m) => m.key === "nombre") ? [matches.find((m) => m.key === "nombre")] : []
+                                  ),
+                                }}
+                              ></span>
+                            </div>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="px-4 py-4 text-sm text-gray-500 text-center">
+                          No encontramos el producto que buscas.
+                        </li>
+                      )}
+                    </>
                   )}
                 </ul>
 
