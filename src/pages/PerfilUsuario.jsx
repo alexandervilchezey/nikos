@@ -21,7 +21,7 @@ export default function PerfilUsuario() {
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({ mode: 'onChange' });
 
   const ciudadSeleccionada = watch('ciudad');
@@ -206,9 +206,9 @@ export default function PerfilUsuario() {
 
         <button
             type="submit"
-            disabled={!isValid || loading || loadingMensaje}
+            disabled={loading || loadingMensaje}
             className={`w-full py-3 my-3 rounded transition ${
-                isValid && !loading && !loadingMensaje
+                !loading && !loadingMensaje
                 ? "bg-black text-white hover:bg-gray-800"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
