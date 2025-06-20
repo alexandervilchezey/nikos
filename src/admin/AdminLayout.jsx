@@ -45,6 +45,10 @@ export default function AdminLayout() {
             <i className='bx bx-menu-filter text-lg'></i> 
             {!isCollapsed && 'Filtros'}
           </Link>
+          <Link to="/admin/ventas" className="hover:text-gray-300 flex items-center gap-2 text-lg">
+            <i className='bx bx-receipt text-lg'></i> 
+            {!isCollapsed && 'Ventas'}
+          </Link>
           <Link to="/admin/productos" className="hover:text-gray-300 flex items-center gap-2 text-lg">
             <i className="bx bx-box text-lg"></i>
             {!isCollapsed && 'Productos'}
@@ -56,7 +60,7 @@ export default function AdminLayout() {
             className="flex items-center gap-2 text-white hover:text-gray-300 text-lg"
           >
             <i className="bx bx-door-open text-lg"></i>
-            {!isCollapsed && 'Logout'}
+            {!isCollapsed && 'Cerrar Sesión'}
           </button>
         </div>
       </aside>

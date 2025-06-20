@@ -79,7 +79,7 @@ useEffect(() => {
     const numeroOrden = await obtenerNuevoNumeroOrden();
 
     await addDoc(collection(db, "ordenes"), {
-      uid: auth.currentUser?.uid,
+      uid: auth.currentUser?.uid || '',
       numeroOrden,
       cliente: data,
       estado: 'pendiente',

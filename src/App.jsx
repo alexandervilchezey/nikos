@@ -19,6 +19,7 @@ import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import ProductosAdmin from './admin/ProductosAdmin';
 import FiltrosAdmin from './admin/FiltrosAdmin';
+import VentasAdmin from './admin/VentasAdmin';
 
 function App() {
 
@@ -65,7 +66,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="productos" element={<ProductosAdmin />} />
           <Route path="filtros" element={<FiltrosAdmin />} />
-          {/* <Route path="ventas" element={<Ventas />} /> */}
+          <Route path="ventas" element={<VentasAdmin />} />
         </Route>
           
       </Routes>
