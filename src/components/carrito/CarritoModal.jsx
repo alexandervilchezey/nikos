@@ -20,16 +20,16 @@ export default function CarritoModal() {
       }, 400);
     };
 
-  const [avisoMayorista, setAvisoMayorista] = useState(null);
+  const [avisoMayorista, setAvisoMayorista] = useState('');
 
   const handleCantidadChange = (item, incremento) => {
     const nuevaCantidad = item.cantidad + incremento;
     if (nuevaCantidad > 3) {
       setAvisoMayorista(item.slug + item.talla + item.color);
     } else {
-      setAvisoMayorista(null);
-      actualizarCantidad(item.slug, item.talla, item.color, nuevaCantidad);
+      setAvisoMayorista('');
     }
+    actualizarCantidad(item.slug, item.talla, item.color, nuevaCantidad);
   };
 
   const calcularTotal = () =>
@@ -68,8 +68,7 @@ export default function CarritoModal() {
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-800 cursor-pointer" onClick={() => navigate(`/productos/${item.slug}`)}>{item.nombre}</h3>
                 <div className="text-sm text-gray-600 flex">
-                  Talla: <span className="font-medium px-1">{item.talla}</span> | Color: {" "}
-                  <div className="rounded-full h-[20px] w-[20px] border mx-1" style={{backgroundColor: item.color}}></div>
+                  Talla: <span className="font-medium px-1">{item.talla}</span> | Color: {item.color}
                 </div>
                 <span className="text-sm text-gray-500">
                   S/ {item.precio} c/u
@@ -95,12 +94,6 @@ export default function CarritoModal() {
                     +
                   </button>
                 </div>
-
-                {avisoMayorista === item.slug + item.talla + item.color && (
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Si deseas hacer compras al por mayor, necesitas registrarte o iniciar sesión para acceder a mejores precios.
-                  </p>
-                )}
               </div>
 
               <button
@@ -125,7 +118,11 @@ export default function CarritoModal() {
             <span>Total:</span>
             <span className="font-semibold">S/ {calcularTotal().toFixed(2)}</span>
           </div>
-          <p className="text-xs text-gray-400 mb-3">* No incluye delivery</p>
+          {avisoMayorista !== '' && (
+            <p className="text-xs text-gray-400 mb-3">
+              Si deseas hacer compras al por mayor, comunícate con nosotros para acceder a mejores precios.
+            </p>
+          )}
           <button 
             onClick={irACheckout}
             className="w-full bg-green-600 hover:bg-green-700 py-2 rounded text-white font-semibold">

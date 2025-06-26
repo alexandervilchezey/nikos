@@ -1,13 +1,4 @@
 import { useState } from "react";
-import {
-  tipoCalzado,
-  marcasZapatos,
-  usuarios,
-  materiales,
-  usos,
-  origenes,
-  colores,
-} from "../../utils/dataGeneral";
 
 const LIMITE_VISIBLE = 4;
 
@@ -29,15 +20,15 @@ const FiltroGrupo = ({ titulo, items, campo, valoresSeleccionados, toggleFiltro 
 
       {abierto && (
         <div className="space-y-2 pl-1">
-          {visibles.map((item) => (
-            <label key={item.nombre} className="flex items-center text-sm text-gray-700">
+          {visibles.map((nombre) => (
+            <label key={nombre} className="flex items-center text-sm text-gray-700">
               <input
                 type="checkbox"
                 className="mr-2 accent-blue-600"
-                checked={valoresSeleccionados.includes(item.nombre)}
-                onChange={() => toggleFiltro(campo, item.nombre)}
+                checked={valoresSeleccionados.includes(nombre)}
+                onChange={() => toggleFiltro(campo, nombre)}
               />
-              {item.nombre}
+              {nombre}
             </label>
           ))}
 
@@ -55,13 +46,13 @@ const FiltroGrupo = ({ titulo, items, campo, valoresSeleccionados, toggleFiltro 
   );
 };
 
-export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }) {
+export default function Filtros({ filters, disponibles, toggleFiltro, setFilters, onFiltrar }) {
   return (
     <>
       <div className="max-h-[75vh] overflow-y-auto pr-2 space-y-6 text-sm text-gray-800">
         <FiltroGrupo
           titulo="Tipo de Calzado"
-          items={tipoCalzado}
+          items={disponibles.tipo}
           campo="tipo"
           valoresSeleccionados={filters.tipo}
           toggleFiltro={toggleFiltro}
@@ -69,7 +60,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Marca"
-          items={marcasZapatos}
+          items={disponibles.marca}
           campo="marca"
           valoresSeleccionados={filters.marca}
           toggleFiltro={toggleFiltro}
@@ -77,7 +68,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Usuario / Talla"
-          items={usuarios}
+          items={disponibles.usuario}
           campo="usuario"
           valoresSeleccionados={filters.usuario}
           toggleFiltro={toggleFiltro}
@@ -85,7 +76,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Material"
-          items={materiales}
+          items={disponibles.material}
           campo="material"
           valoresSeleccionados={filters.material}
           toggleFiltro={toggleFiltro}
@@ -93,7 +84,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Uso"
-          items={usos}
+          items={disponibles.uso}
           campo="uso"
           valoresSeleccionados={filters.uso}
           toggleFiltro={toggleFiltro}
@@ -101,7 +92,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Origen"
-          items={origenes}
+          items={disponibles.origen}
           campo="origen"
           valoresSeleccionados={filters.origen}
           toggleFiltro={toggleFiltro}
@@ -109,7 +100,7 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
 
         <FiltroGrupo
           titulo="Colores"
-          items={colores}
+          items={disponibles.color}
           campo="color"
           valoresSeleccionados={filters.color}
           toggleFiltro={toggleFiltro}
@@ -131,8 +122,8 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
             className="w-full accent-blue-600"
           />
         </div>
-        
       </div>
+
       <div className="button pt-4">
         <button
           onClick={onFiltrar}
@@ -142,5 +133,5 @@ export default function Filtros({ filters, toggleFiltro, setFilters, onFiltrar }
         </button>
       </div>
     </>
-);
+  );
 }

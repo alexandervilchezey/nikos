@@ -135,6 +135,16 @@ export default function Login() {
             Registrarme
           </button>
         </p>
+
+        <p className="text-center text-sm text-gray-700 my-1">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="text-black hover:underline"
+          >
+            Volver a la pagina principal
+          </button>
+        </p>
       </form>
     </div>
   );

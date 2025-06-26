@@ -24,6 +24,16 @@ export default function ProductosPage() {
     precioMax: 500
   });
 
+  const [disponibles, setDisponibles] = useState({
+    tipo: [],
+    marca: [],
+    usuario: [],
+    material: [],
+    uso: [],
+    origen: [],
+    color: []
+  });
+
   const [productos, setProductos] = useState([]);
   const [mostrarModalFiltros, setMostrarModalFiltros] = useState(false);
   const [animatingClose, setAnimatingClose] = useState(false);
@@ -73,7 +83,6 @@ export default function ProductosPage() {
         ...doc.data()
       }));
 
-      // filtrado adicional en frontend
       const filtrados = fetched.filter((producto) => {
         const cumpleTipo =
           filters.tipo.length === 0 ||
@@ -91,6 +100,10 @@ export default function ProductosPage() {
           filters.origen.length === 0 ||
           filters.origen.includes(producto.origen);
 
+        const cumpleUsuario =
+          filters.usuario.length === 0 ||
+          filters.usuario.includes(producto.usuario);
+
         const cumpleColor =
           filters.color.length === 0 ||
           filters.color.some((c) =>
@@ -98,12 +111,13 @@ export default function ProductosPage() {
               (v) => v.color?.toLowerCase() === c.toLowerCase()
             )
           );
-
+          console.log(cumpleColor)
         return (
           cumpleTipo &&
           cumpleMaterial &&
           cumpleUso &&
           cumpleOrigen &&
+          cumpleUsuario &&
           cumpleColor
         );
       });
@@ -117,10 +131,63 @@ export default function ProductosPage() {
     }
   };
 
+  const cargarFiltrosDisponibles = async () => {
+  const snapshot = await getDocs(collection(db, "filtros"));
+  const data = snapshot.docs.map((doc) => doc.data());
+
+  const agrupados = {
+    tipo: [],
+    marca: [],
+    usuario: [],
+    material: [],
+    uso: [],
+    origen: [],
+    color: [] // lo llenaremos con productos después
+  };
+
+  data.forEach((item) => {
+    const tipo = item.tipo.toLowerCase();
+    if (agrupados[tipo] && !agrupados[tipo].includes(item.valor)) {
+      agrupados[tipo].push(item.valor);
+    }
+  });
+
+  // Cargar productos para obtener los colores únicos
+  const productosSnap = await getDocs(collection(db, "productos"));
+  const productosData = productosSnap.docs.map(doc => doc.data());
+
+  const coloresSet = new Set();
+
+  productosData.forEach(producto => {
+    if (producto.variantes && Array.isArray(producto.variantes)) {
+      producto.variantes.forEach(vari => {
+        if (vari.color) {
+          coloresSet.add(vari.color.trim().toLowerCase()); // normaliza
+        }
+      });
+    }
+  });
+
+  agrupados.color = Array.from(coloresSet);
+
+  setDisponibles(agrupados);
+};
+
+
   useEffect(() => {
-    handleFiltrar(); // cargar al inicio
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    cargarFiltrosDisponibles();
+    handleFiltrar();
   }, []);
+
+  const toggleFiltro = (key, val) => {
+    setFilters((prev) => {
+      const exists = prev[key].includes(val);
+      const next = exists
+        ? prev[key].filter((v) => v !== val)
+        : [...prev[key], val];
+      return { ...prev, [key]: next };
+    });
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-4 px-4 py-1">
@@ -129,29 +196,15 @@ export default function ProductosPage() {
         animatingClose={animatingClose}
         cerrarModalConAnimacion={cerrarModalConAnimacion}
         filters={filters}
-        toggleFiltro={(key, val) => {
-          setFilters((prev) => {
-            const exists = prev[key].includes(val);
-            const next = exists
-              ? prev[key].filter((v) => v !== val)
-              : [...prev[key], val];
-            return { ...prev, [key]: next };
-          });
-        }}
+        disponibles={disponibles}
+        toggleFiltro={toggleFiltro}
         setFilters={setFilters}
       >
         <Filtros
           filters={filters}
+          disponibles={disponibles}
+          toggleFiltro={toggleFiltro}
           setFilters={setFilters}
-          toggleFiltro={(key, val) => {
-            setFilters((prev) => {
-              const exists = prev[key].includes(val);
-              const next = exists
-                ? prev[key].filter((v) => v !== val)
-                : [...prev[key], val];
-              return { ...prev, [key]: next };
-            });
-          }}
           onFiltrar={handleFiltrar}
         />
       </ModalFiltros>
@@ -159,16 +212,9 @@ export default function ProductosPage() {
       <aside className="hidden md992:block w-full max-w-[250px]">
         <Filtros
           filters={filters}
+          disponibles={disponibles}
+          toggleFiltro={toggleFiltro}
           setFilters={setFilters}
-          toggleFiltro={(key, val) => {
-            setFilters((prev) => {
-              const exists = prev[key].includes(val);
-              const next = exists
-                ? prev[key].filter((v) => v !== val)
-                : [...prev[key], val];
-              return { ...prev, [key]: next };
-            });
-          }}
           onFiltrar={handleFiltrar}
         />
       </aside>
@@ -220,8 +266,7 @@ export default function ProductosPage() {
                           <span className="text-sm text-green-500 font-semibold w-full">
                             -{Math.round(
                               100 - (producto.precioDescuento / producto.precio) * 100
-                            )}
-                            %
+                            )}%
                           </span>
                         </>
                       )}
@@ -232,7 +277,7 @@ export default function ProductosPage() {
             </div>
 
             {cantidadVisible < productos.length && (
-              <div className="button text-center mt-6">
+              <div className="text-center mt-6">
                 <button
                   onClick={() => setCantidadVisible(cantidadVisible + 6)}
                   className="btn secondary-btn border px-4 py-2"

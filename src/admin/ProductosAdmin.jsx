@@ -14,6 +14,7 @@ export default function ProductosAdmin() {
   const [isOpen, setIsOpen] = useState(false);
   const [productoEdit, setProductoEdit] = useState(null);
   const [modalEliminar, setModalEliminar] = useState(false);
+  const [disponibles, setDisponibles] = useState({});
 
   const abrirNuevo = () => {
     setProductoEdit(null);
@@ -40,13 +41,40 @@ export default function ProductosAdmin() {
   };
 
   useEffect(() => {
-    const obtenerProductos = async () => {
+    const obtenerDatos = async () => {
       const querySnapshot = await getDocs(collection(db, 'productos'));
       const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProductos(data);
     };
-    obtenerProductos();
+    obtenerDatos();
   }, [isOpen]);
+
+  useEffect(() => {
+    const obtenerFiltros = async () => {
+      const querySnapshot = await getDocs(collection(db, 'filtros'));
+
+      const filtros = querySnapshot.docs.map(doc => ({
+        ...doc.data()
+      }));
+
+      const agrupados = filtros.reduce((acc, curr) => {
+        const key = curr.tipo;
+        if (!acc[key]) acc[key] = [];
+
+        // Evita duplicados por valor, pero guarda el objeto completo
+        if (!acc[key].some(item => item.valor === curr.valor)) {
+          acc[key].push(curr);
+        }
+
+        return acc;
+      }, {});
+
+      setDisponibles(agrupados);
+    };
+
+    obtenerFiltros();
+  }, []);
+
 
   const filtrarYOrdenar = () => {
     let filtrados = productos.filter(p => p.nombre.toLowerCase().includes(filtroNombre.toLowerCase()));
@@ -98,6 +126,7 @@ export default function ProductosAdmin() {
             <tr>
               <th className="py-2 px-4 border">Nombre</th>
               <th className="py-2 px-4 border">Precio</th>
+              <th className="py-2 px-4 border">Precio Mayorista</th>
               <th className="py-2 px-4 border">Marca</th>
               <th className="py-2 px-4 border">Material</th>
               <th className="py-2 px-4 border">Acciones</th>
@@ -108,6 +137,7 @@ export default function ProductosAdmin() {
               <tr key={producto.id} className="border-t hover:bg-gray-50">
                 <td className="py-2 px-4 border">{producto.nombre}</td>
                 <td className="py-2 px-4 border">S/ {producto.precio}</td>
+                <td className="py-2 px-4 border">S/ {producto.precioMayorista}</td>
                 <td className="py-2 px-4 border">{producto.marca}</td>
                 <td className="py-2 px-4 border">{(producto.material || []).join(', ')}</td>
                 <td className="py-2 px-4 flex justify-center gap-2 text-center space-x-2">
@@ -152,30 +182,29 @@ export default function ProductosAdmin() {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         editarProducto={productoEdit}
+        disponibles={disponibles}
       />
 
       <Modal isOpen={modalEliminar} onClose={() => setModalEliminar(false)}>
-            <div className="w-full max-w-md relative">
-            <h2 className="text-xl font-semibold mb-2">Eliminar producto</h2>
-            <p className="mb-4">¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?</p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setModalEliminar(false)}
-                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-              >
-                No, cancelar
-              </button>
-              <button
-                onClick={eliminar}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-              >
-                Sí, eliminar
-              </button>
-            </div>
+        <div className="w-full max-w-md relative">
+          <h2 className="text-xl font-semibold mb-2">Eliminar producto</h2>
+          <p className="mb-4">¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?</p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setModalEliminar(false)}
+              className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+            >
+              No, cancelar
+            </button>
+            <button
+              onClick={eliminar}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Sí, eliminar
+            </button>
           </div>
+        </div>
       </Modal>
-
-      
     </div>
   );
 }

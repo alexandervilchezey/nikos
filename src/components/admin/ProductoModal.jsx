@@ -5,18 +5,20 @@ import { db } from '../../firebase/firebase';
 import { generarSlugUnico } from '../../utils/generalFunctions';
 import SelectField from './SelectField';
 
-const opciones = (arr) => arr.map((el) => ({ value: el, label: el }));
-const USOS = opciones(['Urbano', 'Deportivo', 'Casual', 'Formal']);
-const CATEGORIAS = opciones(['Zapatillas', 'Botas', 'Sandalias', 'Tacones']);
-const MATERIALES = opciones(['Cuero', 'Sintético', 'Lona', 'Malla']);
-const ORIGENES = opciones(['Nacional', 'Importado']);
-const MARCAS = opciones(['Nike', 'Adidas', 'Puma']);
-const USUARIOS = opciones(['Hombre', 'Mujer', 'Niño/a', 'Juvenil', 'Bebé']);
+export default function ProductoModal({ isOpen, onClose, editarProducto, disponibles }) {
+  const opciones = (arr) => arr.map((el) => ({ value: el, label: el.valor }));
+
 
 const transformarOpciones = (arr) => (Array.isArray(arr) ? arr.map(el => ({ value: el, label: el })) : []);
 const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
 
-export default function ProductoModal({ isOpen, onClose, editarProducto }) {
+  const USOS = opciones(disponibles.uso || []);
+  const CATEGORIAS = opciones(disponibles.tipo || []);
+  const MATERIALES = opciones(disponibles.material || []);
+  const ORIGENES = opciones(disponibles.origen || []);
+  const MARCAS = opciones(disponibles.marca || []);
+  const USUARIOS = opciones(disponibles.usuario || []);
+
   const [imagenes, setImagenes] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [subiendo, setSubiendo] = useState(false);
@@ -24,128 +26,93 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
   const [etiquetaInput, setEtiquetaInput] = useState('');
   const [etiquetas, setEtiquetas] = useState([]);
   const [errorVariantes, setErrorVariantes] = useState(null);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
 
   const {
     register,
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
-  if (!isOpen) return;
+    if (!isOpen) return;
 
-  if (editarProducto) {
-    reset({
-      ...editarProducto,
-      tipoCalzado: transformarOpcion(editarProducto.tipoCalzado),
-      material: transformarOpciones(editarProducto.material),
-      uso: transformarOpciones(editarProducto.uso),
-      origen: transformarOpciones(editarProducto.origen),
-      marca: transformarOpcion(editarProducto.marca),
-      usuario: transformarOpcion(editarProducto.usuario),
-    });
-    setPreviewUrls(editarProducto.imagenes || []);
-    setVariantes(editarProducto.variantes || []);
-    setEtiquetas(editarProducto.etiquetas || []);
-  } else {
-    reset({
-      nombre: '',
-      descripcion: '',
-      precio: '',
-      precioDescuento: '',
-      precioMayorista: '',
-      tipoCalzado: null,
-      material: [],
-      uso: [],
-      origen: [],
-      marca: null,
-      usuario: null,
-    });
-    setPreviewUrls([]);
-    setVariantes([]);
-    setEtiquetas([]);
-  }
+    if (editarProducto) {
+      reset({
+        ...editarProducto,
+        tipoCalzado: transformarOpcion(editarProducto.tipoCalzado),
+        material: transformarOpciones(editarProducto.material),
+        uso: transformarOpciones(editarProducto.uso),
+        origen: transformarOpcion(editarProducto.origen),
+        marca: transformarOpcion(editarProducto.marca),
+        usuario: transformarOpcion(editarProducto.usuario),
+      });
+      const variantesEditadas = (editarProducto.variantes || []).map((v) => ({
+        ...v,
+        imagenLocal: v.imagen || '',
+        color: v.color || '',
+        codigoColor: v.codigoColor || '',
+        tallas: v.tallas || [],
+      }));
 
-  setImagenes([]);
-}, [isOpen, editarProducto, reset]);
+      setPreviewUrls((editarProducto.imagenes || []));
+      setVariantes(variantesEditadas);
+      setEtiquetas(editarProducto.etiquetas || []);
+    } else {
+      reset({
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        precioDescuento: '',
+        precioMayorista: '',
+        tipoCalzado: null,
+        material: [],
+        uso: [],
+        origen: [],
+        marca: null,
+        usuario: null,
+      });
+      setPreviewUrls([]);
+      setVariantes([]);
+      setEtiquetas([]);
+    }
 
+    setImagenes([]);
+  }, [isOpen, editarProducto, reset]);
 
-  // ================= IMAGENES =================
+  const usuarioWatch = watch('usuario');
+  useEffect(() => {
+    if (usuarioWatch?.value) {
+      setUsuarioSeleccionado(usuarioWatch.value);
+    }
+  }, [usuarioWatch]);
+
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file && previewUrls.length < 9) {
+      const nuevaURL = URL.createObjectURL(file);
       setImagenes([...imagenes, file]);
-      setPreviewUrls([...previewUrls, URL.createObjectURL(file)]);
+      setPreviewUrls([...previewUrls, nuevaURL]);
+
+      const tallasDefault = (usuarioSeleccionado?.tallas || []).map(t => ({ talla: t, stock: 0 }));
+      setVariantes(prev => [...prev, {
+        imagenLocal: nuevaURL,
+        imagen: '',
+        color: '',
+        codigoColor: '',
+        tallas: tallasDefault
+      }]);
     }
     e.target.value = '';
   };
 
-  const subirImagenACloudinary = async (file) => {
-    const url = 'https://api.cloudinary.com/v1_1/ddebdvfcg/upload';
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'nikosperu_preset');
-
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await response.json();
-    return data.secure_url;
-  };
-
-  const subirImagenesYObtenerURLs = async () => {
-    const urls = [];
-    for (const imagen of imagenes) {
-      const url = await subirImagenACloudinary(imagen);
-      urls.push(url);
-    }
-    return urls;
-  };
-
-  // ================= ETIQUETAS =================
-  const agregarEtiqueta = () => {
-    if (etiquetaInput.trim()) {
-      setEtiquetas([...etiquetas, etiquetaInput.trim()]);
-      setEtiquetaInput('');
-    }
-  };
-
-  const eliminarEtiqueta = (index) => {
-    setEtiquetas(etiquetas.filter((_, i) => i !== index));
-  };
-
-  // ================= VARIANTES =================
-  const agregarVariante = () => {
-    setVariantes([...variantes, { color: '', codigoColor: '#000000', tallas: [] }]);
-  };
-
-  const validarVariantes = () => {
-    if (variantes.length === 0) {
-      setErrorVariantes('Debes agregar al menos una variante.');
-      return false;
-    }
-    for (const v of variantes) {
-      if (!v.color || !v.codigoColor || !Array.isArray(v.tallas) || v.tallas.length === 0) {
-        setErrorVariantes('Cada variante debe tener color, código de color y al menos una talla.');
-        return false;
-      }
-      for (const t of v.tallas) {
-        if (!t.talla || t.stock === undefined || t.stock === null || t.stock === '') {
-          setErrorVariantes('Cada talla debe tener un valor de talla y stock.');
-          return false;
-        }
-      }
-    }
-    setErrorVariantes(null);
-    return true;
-  };
-
   const eliminarVariante = (idx) => {
-    setVariantes(variantes.filter((_, i) => i !== idx));
+    setVariantes(v => v.filter((_, i) => i !== idx));
+    setPreviewUrls(p => p.filter((_, i) => i !== idx));
+    setImagenes(img => img.filter((_, i) => i !== idx));
   };
 
   const actualizarVariante = (idx, campo, valor) => {
@@ -172,17 +139,51 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
     setVariantes(nuevas);
   };
 
-  // ================= SUBMIT =================
+  const subirImagenACloudinary = async (file) => {
+    const url = 'https://api.cloudinary.com/v1_1/ddebdvfcg/upload';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'nikosperu_preset');
+    const response = await fetch(url, { method: 'POST', body: formData });
+    const data = await response.json();
+    return data.secure_url;
+  };
+
+  const validarVariantes = () => {
+    if (variantes.length === 0) {
+      setErrorVariantes('Debes agregar al menos una variante.');
+      return false;
+    }
+    for (const v of variantes) {
+      if (!Array.isArray(v.tallas) || v.tallas.length === 0) {
+        setErrorVariantes('Cada variante debe tener al menos una talla.');
+        return false;
+      }
+    }
+    setErrorVariantes(null);
+    return true;
+  };
+
   const onSubmit = async (data) => {
     if (!validarVariantes()) return;
-
     setSubiendo(true);
     try {
-      const urls = imagenes.length > 0
-        ? await subirImagenesYObtenerURLs()
-        : editarProducto?.imagenes || [];
+      const nuevasUrls = await Promise.all(imagenes.map(subirImagenACloudinary));
 
       const slug = await generarSlugUnico(data.nombre, editarProducto?.id);
+
+      const imagenesFinal = [...previewUrls];
+      nuevasUrls.forEach((url, idx) => {
+        const index = previewUrls.length - nuevasUrls.length + idx;
+        imagenesFinal[index] = url;
+      });
+
+      const variantesFinal = variantes.map((v, idx) => ({
+        color: v.color || '',
+        codigoColor: v.codigoColor || '',
+        tallas: v.tallas || [],
+        imagen: imagenesFinal[idx] || '',
+      }));
 
       const productoData = {
         ...data,
@@ -190,15 +191,15 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
         precio: parseFloat(data.precio),
         precioDescuento: parseFloat(data.precioDescuento),
         precioMayorista: parseFloat(data.precioMayorista),
-        imagenes: urls,
-        variantes,
+        imagenes: imagenesFinal,
+        variantes: variantesFinal,
         etiquetas,
         marca: data.marca?.value || '',
         usuario: data.usuario?.value || '',
         tipoCalzado: data.tipoCalzado?.value || '',
         material: data.material?.map((opt) => opt.value),
         uso: data.uso?.map((opt) => opt.value),
-        origen: data.origen?.map((opt) => opt.value),
+        origen: data.origen?.value || '',
         actualizadoEn: new Date(),
       };
 
@@ -209,7 +210,6 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
         productoData.creadoEn = new Date();
         await addDoc(collection(db, 'productos'), productoData);
       }
-
       onClose();
     } catch (error) {
       console.error('Error al guardar producto:', error);
@@ -219,6 +219,18 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
   };
 
   if (!isOpen) return null;
+
+     // ================= ETIQUETAS =================
+  const agregarEtiqueta = () => {
+    if (etiquetaInput.trim()) {
+      setEtiquetas([...etiquetas, etiquetaInput.trim()]);
+      setEtiquetaInput('');
+    }
+  };
+
+  const eliminarEtiqueta = (index) => {
+    setEtiquetas(etiquetas.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -284,7 +296,6 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
                 control={control}
                 options={ORIGENES}
                 errors={errors}
-                isMulti
                 rules={{ required: 'Debe seleccionar el origen' }}
             />
           </div>
@@ -346,6 +357,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
                   newFiles.splice(idx, 1);
                   setPreviewUrls(newPreviews);
                   setImagenes(newFiles);
+                  eliminarVariante(idx);
                 }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs">×</button>
               </div>
             ))}
@@ -359,34 +371,33 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
 
           {/* Variantes */}
           <div className='my-2'>
-            <h3 className="text-md font-semibold mb-2">Variantes por color y talla</h3>
-            {errorVariantes && <p className="text-red-500 text-sm mb-2">{errorVariantes}</p>}
-            {variantes.map((v, i) => (
-              <div key={i} className="border p-3 rounded mb-3">
-                <div className="flex gap-2 mb-2">
-                  <input value={v.color} onChange={(e) => actualizarVariante(i, 'color', e.target.value)} placeholder="Color" className="flex-1 border px-2 py-1 rounded" />
-                  <input type="color" value={v.codigoColor} onChange={(e) => actualizarVariante(i, 'codigoColor', e.target.value)} className="w-12 h-10 rounded border" />
-                  <button type="button" onClick={() => eliminarVariante(i)} className="text-red-500 ml-auto">Eliminar</button>
-                </div>
-                {v.tallas.map((t, j) => (
-                  <div key={j} className="flex gap-2 mb-1">
-                    <input value={t.talla} onChange={(e) => actualizarTalla(i, j, 'talla', e.target.value)} placeholder="Talla" className="border px-2 py-1 rounded w-24" />
-                    <input type="number" value={t.stock} onChange={(e) => actualizarTalla(i, j, 'stock', parseInt(e.target.value))} placeholder="Stock" className="border px-2 py-1 rounded w-24" />
-                    <button type="button" onClick={() => eliminarTalla(i, j)} className="text-sm text-red-500">Quitar</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => agregarTalla(i)} className="text-blue-500 text-sm">+ Agregar talla</button>
+        <h3 className="text-md font-semibold mb-2">Variantes por imagen y talla</h3>
+        {errorVariantes && <p className="text-red-500 text-sm mb-2">{errorVariantes}</p>}
+        {variantes.map((v, i) => (
+          <div key={i} className="border p-3 rounded mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <img src={v.imagenLocal || v.imagen} className="w-12 h-12 object-cover rounded border" />
+              <input value={v.color} onChange={(e) => actualizarVariante(i, 'color', e.target.value)} placeholder="Color" className="flex-1 border px-2 py-1 rounded" />
+              <button type="button" onClick={() => eliminarVariante(i)} className="text-red-500 ml-auto">Eliminar</button>
+            </div>
+            {v.tallas.map((t, j) => (
+              <div key={j} className="flex gap-2 mb-1">
+                <input value={t.talla} onChange={(e) => actualizarTalla(i, j, 'talla', e.target.value)} placeholder="Talla" className="border px-2 py-1 rounded w-24" />
+                <input type="number" value={t.stock} onChange={(e) => actualizarTalla(i, j, 'stock', parseInt(e.target.value))} placeholder="Stock" className="border px-2 py-1 rounded w-24" />
+                <button type="button" onClick={() => eliminarTalla(i, j)} className="text-sm text-red-500">Quitar</button>
               </div>
             ))}
-            <button type="button" onClick={agregarVariante} className="bg-gray-100 text-sm px-3 py-1 rounded hover:bg-gray-200">+ Agregar variante</button>
+            <button type="button" onClick={() => agregarTalla(i)} className="text-blue-500 text-sm">+ Agregar talla</button>
           </div>
+        ))}
+      </div>
         </form>
         <div className="sticky bottom-0 left-0 bg-white pt-4 mt-4 pb-2 border-t border-gray-200 flex justify-end gap-2 z-10">
           <button
             type="submit"
             form="form-producto"
             disabled={subiendo}
-            className={`bg-black text-white p-2 rounded hover:bg-gray-800 transition ${
+            className={`px-4 py-2 bg-black text-white rounded hover:bg-gray-800 ${
               subiendo ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -396,7 +407,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto }) {
             type="button"
             onClick={onClose}
             disabled={subiendo}
-            className={`bg-red-500 text-white p-2 rounded transition ${
+            className={`px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 ${
               subiendo ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

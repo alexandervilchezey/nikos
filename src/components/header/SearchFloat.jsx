@@ -99,6 +99,7 @@ export default function SearchFloat({ isSearchOpen, setIsSearchOpen, productos }
                 type="search"
                 placeholder="Buscar productos"
                 value={searchTerm}
+                autoFocus
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-10 w-full h-full outline-none border-none text-base"
               />

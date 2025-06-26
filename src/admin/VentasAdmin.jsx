@@ -91,7 +91,7 @@ export default function VentasAdmin() {
         >
           <option value="">Tipo de filtro</option>
           <option value="usuario">Usuario</option>
-          <option value="estilo">Estilo</option>
+          <option value="origen">Origen</option>
           <option value="uso">Uso</option>
           <option value="marca">Marca</option>
           <option value="material">Material</option>

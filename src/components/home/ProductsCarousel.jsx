@@ -10,7 +10,7 @@ export default function ProductsCarousel({ productos }) {
   const productosDestacados = productos
     .filter((producto) => producto.creadoEn)
     .sort((a, b) => new Date(b.creadoEn) - new Date(a.creadoEn))
-    .slice(0, 8); // los 8 más recientes
+    .slice(0, 8);
 
   const prevRef = useRef(null);
   const nextRef = useRef(null);

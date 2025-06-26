@@ -2,9 +2,8 @@ import { useState } from "react";
 import Modal from "../reusable/Modal";
 import { useCarrito } from "../carrito/CarritoContext";
 
-export default function ProductSummary({ producto }) {
+export default function ProductSummary({ producto, varianteIndex, setVarianteIndex }) {
   const { agregarAlCarrito } = useCarrito();
-  const [colorSelected, setColorSelected] = useState('');
   const [tallaSelected, setTallaSelected] = useState('');
   const [countProducts, setCountProducts] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,8 +21,9 @@ export default function ProductSummary({ producto }) {
   };
 
   const handleAgregar = (producto) => {
-    if (!tallaSelected || !colorSelected) {
-      setErrorMensaje("Selecciona talla y color");
+    const variante = producto.variantes?.[varianteIndex];
+    if (!tallaSelected || !variante) {
+      setErrorMensaje("Selecciona talla e imagen");
       return;
     }
 
@@ -33,9 +33,9 @@ export default function ProductSummary({ producto }) {
     const item = {
       slug: producto.slug,
       nombre: producto.nombre,
-      imagen: producto.imagenes[0],
+      imagen: variante.imagen,
       talla: tallaSelected,
-      color: colorSelected,
+      color: variante.color || '',
       cantidad: parseInt(countProducts),
       precio: producto.precioDescuento || producto.precio,
     };
@@ -48,7 +48,7 @@ export default function ProductSummary({ producto }) {
     }, 2000);
   };
 
-  const varianteSeleccionada = producto.variantes?.find(v => v.codigoColor === colorSelected);
+  const varianteSeleccionada = producto.variantes?.[varianteIndex];
 
   return (
     <div className="summary">
@@ -69,24 +69,26 @@ export default function ProductSummary({ producto }) {
         </div>
 
         <div className="product-color">
-          <span>Colores:</span>
-          <div className="wrap">
+          <span>Variantes:</span>
+          <div className="wrap flex gap-2 flex-wrap">
             {producto.variantes?.map((variante, index) => (
-              <button
+              <img
                 key={index}
-                style={{ backgroundColor: variante.codigoColor }}
-                className={`cursor-pointer border rounded-full transition-shadow relative w-10 h-10 ${colorSelected === variante.codigoColor ? 'selected shadow-[inset_0_0_0_4px_var(--white-color)]' : ''}`}
+                src={variante.imagen}
+                alt={`Variante ${index}`}
                 onClick={() => {
-                  setColorSelected(variante.codigoColor);
+                  setVarianteIndex(index);
                   setTallaSelected('');
                   setErrorMensaje('');
                 }}
-              ></button>
+                className={`w-12 h-12 rounded object-cover border-2 cursor-pointer transition-all
+                  ${index === varianteIndex ? 'border-black ring-2 ring-offset-1' : 'border-transparent'}`}
+              />
             ))}
           </div>
         </div>
 
-        {colorSelected && (
+        {varianteSeleccionada && (
           <div className="product-size mt-4">
             <span>Tallas:</span>
             <div className="wrap">

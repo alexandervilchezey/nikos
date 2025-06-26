@@ -50,6 +50,7 @@ export default function Register() {
         uid: user.uid,
         email: user.email,
         rol: 'cliente',
+        mayorista: false,
         nombre: form.name,
         apellido: form.lastname,
         creadoEn: new Date()
@@ -173,6 +174,15 @@ export default function Register() {
           <a href="/nikos/login" className="text-black underline">
             Inicia sesión
           </a>
+        </p>
+        <p className="text-center text-sm text-gray-700 my-1">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="text-black hover:underline"
+          >
+            Volver a la pagina principal
+          </button>
         </p>
       </form>
     </div>

@@ -12,6 +12,7 @@ const Products = () => {
   const { slug } = useParams();
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [varianteIndex, setVarianteIndex] = useState(0);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -45,8 +46,12 @@ const Products = () => {
       <BreadCrumbs producto={producto} />
       <div className="dotgrid">
         <div className="wrapper flex gap-[20px] flex-col md992:flex-row justify-center">
-          <ProductGallery producto={producto} />
-          <ProductSummary producto={producto} />
+          <ProductGallery producto={producto} varianteIndex={varianteIndex} />
+          <ProductSummary
+            producto={producto}
+            varianteIndex={varianteIndex}
+            setVarianteIndex={setVarianteIndex}
+          />
         </div>
       </div>
       <ProductDescription producto={producto} />
