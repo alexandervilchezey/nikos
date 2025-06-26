@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, limit } from 'firebase/firestore';
 import HeaderLeft from '../header/HeaderLeft';
 import HeaderCenter from '../header/HeaderCenter';
 import HeaderRight from '../header/HeaderRight';
@@ -14,9 +14,12 @@ export default function Header() {
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
+    if (!isSearchOpen) return;
+
     const obtenerProductos = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "productos"));
+        const q = query(collection(db, "productos"), limit(20)); // <-- Evita cargar demasiado
+        const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
@@ -28,7 +31,7 @@ export default function Header() {
     };
 
     obtenerProductos();
-  }, []);
+  }, [isSearchOpen]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 992px)');
@@ -37,14 +40,14 @@ export default function Header() {
         setIsMobileMenuOpen(false);
       }
     };
-    mediaQuery.addListener(handleResize);
-    return () => mediaQuery.removeListener(handleResize);
+    mediaQuery.addEventListener('change', handleResize);
+    return () => mediaQuery.removeEventListener('change', handleResize);
   }, []);
 
   return (
-    <div id="page" className="page-home">
-      <header className={isMobileMenuOpen ? 'mobile-version' : ''}>
-        <div className="inner-header">
+    <div id="page" className={`${isMobileMenuOpen ? 'mobile-version' : ''}`}>
+      <header>
+        <div className="inner-header leading-[80px]">
           <div className="wide">
             <div className="wrap">
               <HeaderLeft setIsMobileMenuOpen={setIsMobileMenuOpen} />

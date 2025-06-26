@@ -5,13 +5,11 @@ export default function HeaderCenter() {
         <ul className="list-none">
           <li><a className='link-menu' href="/nikos">Inicio</a></li>
           <li><a className='link-menu' href="/nikos/productos">Productos</a></li>
-        </ul>
-        <ul className="list-none">
+          <li className="font-[Anton] uppercase italic text-[40px] mx-5"><a href="/">Nikos</a></li>
           <li><a className='link-menu' href="/nikos/#marcas">Marcas</a></li>
           <li><a className='link-menu' href="#contacto">Contacto</a></li>
         </ul>
       </nav>
-      <div className='flex pointer-events-none items-center justify-center font-[Anton] uppercase italic text-[40px] absolute top-0 right-0 left-0'><a href="">Nikos</a></div>
     </div>
   );
 }

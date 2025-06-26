@@ -32,7 +32,7 @@ export default function HeaderUserMenu() {
     <div className="relative inline-block text-left" ref={menuRef}>
       <button
         onClick={toggleMenu}
-        className="cursor-pointer text-black font-medium hover:underline max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+        className="cursor-pointer text-black font-medium hover:underline max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
       >
         Hola, {user.displayName}
       </button>

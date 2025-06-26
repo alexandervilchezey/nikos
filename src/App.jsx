@@ -26,10 +26,8 @@ function App() {
   return (
     <div className="relative" style={{ minHeight: '100dvh' }}>
       <Routes>
-        {/* 🔁 Manejo automático de los enlaces de Firebase */}
         <Route path="/redirect" element={<FirebaseRedirector />} />
 
-        {/* 🔐 Autenticación y recuperación */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
@@ -37,7 +35,6 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/confirmar" element={<EmailConfirmation />} />
 
-        {/* 🏠 Rutas dentro del layout */}
         <Route path="/*" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="productos" element={<ProductosPage />} />
@@ -61,7 +58,6 @@ function App() {
           />
         </Route>
 
-         {/* 🏠 Rutas del Admin page */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="productos" element={<ProductosAdmin />} />

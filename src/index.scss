@@ -113,15 +113,6 @@ input[type=number] {
 /*----------------------------------*/
 
 header {
-  .inner-header {
-    :where(.wrap, .menu > ul) {
-      display: flex;
-      align-items: center;
-    }
-  }
-  .inner-header{
-    line-height: 80px;
-  }
   .menu-trigger{
     position: relative;
     font-size: 24px;
@@ -158,7 +149,6 @@ header {
   }
   .header-center{
     nav{
-      grid-template-columns: repeat(2, 1fr);
       gap: 180px;
       max-width: 720px;
       .link-menu{
@@ -194,113 +184,6 @@ header {
     color: var(--white-color);
   }
 }
-.mega-content{
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 60px;
-  .dotgrid{
-    .wrapper{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-col), 100%), 1fr));
-      gap: var(--gutter, 20px);
-      .dot-images{
-        position:relative;
-        margin-bottom:15px;
-        overflow: hidden;
-        .thumbnail.hover{
-          position: absolute;
-          top: auto;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        }
-        a{
-          z-index: 1;
-        }
-        .thumbnail.hover{
-          opacity: 0;
-          transition: opacity .75s ease, transform 1.1s cubic-bezier(0.1, 0.75, 0.5, 0.1) 0s;
-          backface-visibility: hidden;
-          transform: translateZ(0);
-        }
-        &:hover{
-          .thumbnail.hover{
-            opacity: 1;
-            transform: scale(1.1) translateZ(0);
-          }
-          .actions{
-            opacity: 1;
-            transform: translateZ(0);
-          }
-        }
-        .actions{
-          z-index: 2;
-          position: absolute;
-          top: auto;
-          left: 0;
-          right: 0;
-          bottom: 20px;
-          transform: translate3d(0, 100%, 0);
-          opacity: 0;
-          transition: all 0.3s cubic-bezier(0.0, 0.2, 1.0, 1.0);
-          ul{
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            li, a {
-              @extend %circle-button-style;
-            }
-          }
-        }
-        .label{
-          position: absolute;
-          top: auto;
-          right: 0;
-          left: 0;
-          bottom: 20px;
-          display: flex;
-          justify-content: center;
-          gap: 10px;
-          font-size: 12px;
-          font-weight: 600;
-          margin: 0 auto;
-          background-color: var(--primary-color);
-          color: var(--white-color);
-          @extend %circle-button-style;
-        }
-      }
-      .dot-info{
-        text-align: center;
-        .dot-title{
-          font-size: var(--fs14);
-          font-weight: var(--fw600);
-          line-height: 34px;
-          a{
-            transition: var(--transition-color);
-            &:hover {
-              color: var(--light-color);
-            }
-          }
-        }
-        .product-price{
-          .before{
-            text-decoration: line-through;
-            color: var(--light-color);
-          }
-        }
-      }
-    }
-  }
-  .links{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-    gap: 15px;
-    text-align: left;
-    a{
-      color: var(--light-color);
-    }
-  }
-}
 nav.menu :where(.sub-mega){
   position: absolute;
   top: auto;
@@ -317,62 +200,12 @@ nav.menu :where(.sub-mega){
     display: block;
   }
 }
-.sub-mega{
-  left: 0;
-  right: 0;
-  padding: 50px 10px;
-}
-
-@media (min-width:1400px) {
-  .mega-content{
-    grid-template-columns: 1fr 1fr;
-  }
-}
 
 /*--------- Searchbar ---------*/
 .inner-header{
-  .search-float{
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: auto;
-    height: 80px;
-    background-color: var(--white-color);
-    z-index: 1000;
-    display: none;
-    &.active{
-      display: block;
-    }
-    form.search{
-      position: relative;
-      input{
-        outline: 0;
-        padding: 15px 50px;
-        display: flex;
-        border: 0;
-        height: 80px;
-        width: 100%;
-        font-size: 18px;
-      }
-      i{
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 100%;
-        cursor: pointer;
-      }
-    }
-    form.search :where(i){
-      position: absolute;
-      top: 0;
-    }
-    form.search :where(i:last-child){
-      left: auto;
-      right: 0;
-    }
+  :where(.wrap, .menu > ul) {
+    display: flex;
+    align-items: center;
   }
 }
 
