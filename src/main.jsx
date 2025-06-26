@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import './index.scss'
 
-// Contextos combinados
 import { CarritoProvider, ModalCarritoProvider } from "./components/carrito/CarritoContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

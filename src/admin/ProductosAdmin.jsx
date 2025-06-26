@@ -61,7 +61,6 @@ export default function ProductosAdmin() {
         const key = curr.tipo;
         if (!acc[key]) acc[key] = [];
 
-        // Evita duplicados por valor, pero guarda el objeto completo
         if (!acc[key].some(item => item.valor === curr.valor)) {
           acc[key].push(curr);
         }

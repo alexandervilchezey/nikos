@@ -89,10 +89,16 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
         </div>
 
         {varianteSeleccionada && (
-          <div className="product-size mt-4">
+          <div className="product-size mt-4 w-[350px] max-w-[350px]">
             <span>Tallas:</span>
             <div className="wrap">
-              {varianteSeleccionada?.tallas?.map(({ talla, stock }) => (
+                {(Array.isArray(varianteSeleccionada?.tallas) ? [...varianteSeleccionada.tallas] : [])
+                  .sort((a, b) => {
+                    const tallaA = isNaN(a.talla) ? a.talla : parseFloat(a.talla);
+                    const tallaB = isNaN(b.talla) ? b.talla : parseFloat(b.talla);
+                    return tallaA > tallaB ? 1 : -1;
+                  })
+                  .map(({ talla, stock }) => (
                 <button
                   key={talla}
                   onClick={() => {
@@ -113,14 +119,14 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
           </div>
         )}
 
-        <div className="product-action flex gap-6 justify-left items-center mt-2">
+        <div className="product-action flex flex-col sm:flex-row gap-6 justify-left items-left md:items-center mt-2">
           <div className="qty flex flex-wrap">
             <button onClick={() => setCountProducts((prev) => Math.max(1, prev - 1))} className="cursor-pointer decrease h-[40px] w-[40px] bg-[#f1f1f1]">-</button>
             <input className="w-[50px] border text-center" readOnly type="number" value={countProducts} />
             <button onClick={() => setCountProducts((prev) => prev + 1)} className="cursor-pointer increase h-[40px] w-[40px] bg-[#f1f1f1]">+</button>
           </div>
 
-          <div className="addcart button">
+          <div className="addcart button mr-auto">
             <button
               onClick={() => handleAgregar(producto)}
               type="button"
