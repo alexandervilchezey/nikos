@@ -41,7 +41,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm">
-        v.1.0.6 © {new Date().getFullYear()} Nikos. Todos los derechos reservados. 
+        v.1.0.5 © {new Date().getFullYear()} Nikos. Todos los derechos reservados. 
       </div>
     </footer>
     </div>
