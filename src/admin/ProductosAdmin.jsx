@@ -138,7 +138,9 @@ export default function ProductosAdmin() {
                 <td className="py-2 px-4 border">{producto.nombre}</td>
                 <td className="py-2 px-4 border">S/ {producto.precio}</td>
                 <td className="py-2 px-4 border">S/ {producto.precioMayorista}</td>
-                <td className="py-2 px-4 border">{producto.marca}</td>
+                <td className="py-2 px-4 border">
+                  {typeof producto.marca === 'object' ? producto.marca?.valor : producto.marca}
+                </td>
                 <td className="py-2 px-4 border">{(producto.material || []).join(', ')}</td>
                 <td className="py-2 px-4 flex justify-center gap-2 text-center space-x-2">
                   <button

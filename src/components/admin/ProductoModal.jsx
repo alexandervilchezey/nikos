@@ -6,11 +6,28 @@ import { generarSlugUnico } from '../../utils/generalFunctions';
 import SelectField from './SelectField';
 
 export default function ProductoModal({ isOpen, onClose, editarProducto, disponibles }) {
-  const opciones = (arr) => arr.map((el) => ({ value: el, label: el.valor }));
+  const opciones = (arr) =>
+    arr.map((el) => ({
+      value: el.valor,
+      label: el.valor,
+      raw: el
+    }));
 
+  const transformarOpciones = (arr) =>
+    Array.isArray(arr)
+      ? arr.map((el) =>
+          typeof el === 'object'
+            ? { value: el.valor || el, label: el.valor || el, raw: el }
+            : { value: el, label: el }
+        )
+      : [];
 
-const transformarOpciones = (arr) => (Array.isArray(arr) ? arr.map(el => ({ value: el, label: el })) : []);
-const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
+  const transformarOpcion = (valor) =>
+    valor && typeof valor === 'object'
+      ? { value: valor.valor, label: valor.valor, raw: valor }
+      : valor
+      ? { value: valor, label: valor }
+      : null;
 
   const USOS = opciones(disponibles.uso || []);
   const CATEGORIAS = opciones(disponibles.tipo || []);
@@ -50,12 +67,13 @@ const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
         marca: transformarOpcion(editarProducto.marca),
         usuario: transformarOpcion(editarProducto.usuario),
       });
+
       const variantesEditadas = (editarProducto.variantes || []).map((v) => ({
         ...v,
         imagenLocal: v.imagen || '',
         color: v.color || '',
         codigoColor: v.codigoColor || '',
-        tallas: v.tallas || [],
+        tallas: Array.isArray(v.tallas) ? v.tallas : [],
       }));
 
       setPreviewUrls((editarProducto.imagenes || []));
@@ -71,7 +89,7 @@ const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
         tipoCalzado: null,
         material: [],
         uso: [],
-        origen: [],
+        origen: null,
         marca: null,
         usuario: null,
       });
@@ -85,8 +103,11 @@ const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
 
   const usuarioWatch = watch('usuario');
   useEffect(() => {
-    if (usuarioWatch?.value) {
-      setUsuarioSeleccionado(usuarioWatch.value);
+    if (usuarioWatch?.raw) {
+      setUsuarioSeleccionado(usuarioWatch.raw);
+    } else if (usuarioWatch?.value) {
+      const encontrado = disponibles.usuario?.find(u => u.valor === usuarioWatch.value);
+      if (encontrado) setUsuarioSeleccionado(encontrado);
     }
   }, [usuarioWatch]);
 
@@ -97,7 +118,9 @@ const transformarOpcion = (obj) => (obj ? { value: obj, label: obj } : null);
       setImagenes([...imagenes, file]);
       setPreviewUrls([...previewUrls, nuevaURL]);
 
-      const tallasDefault = (usuarioSeleccionado?.tallas || []).map(t => ({ talla: t, stock: 0 }));
+      const tallasDefault = Array.isArray(usuarioSeleccionado?.tallas)
+      ? usuarioSeleccionado.tallas.map(t => ({ talla: t, stock: 0 }))
+      : [];
       setVariantes(prev => [...prev, {
         imagenLocal: nuevaURL,
         imagen: '',

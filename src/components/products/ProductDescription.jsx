@@ -3,12 +3,6 @@ import { useState } from "react";
 export default function ProductDescription({ producto }) {
   const [activeTab, setActiveTab] = useState('description');
 
-  // Aplanar variantes para colores y tallas con stock
-  const colores = producto.variantes?.map((v) => ({
-    nombre: v.color,
-    codigo: v.codigoColor
-  })) || [];
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Tabs */}
