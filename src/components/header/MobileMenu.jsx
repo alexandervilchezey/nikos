@@ -19,6 +19,18 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
     }, 400);
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+
+      localStorage.removeItem("usuario");
+      sessionStorage.removeItem("usuario");
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   return (
     <ModalFiltros
       mostrarModalFiltros={isMobileMenuOpen}
@@ -113,10 +125,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
               </li>
               <li>
                 <button
-                  onClick={async () => {
-                    await signOut(auth);
-                    setIsMobileMenuOpen(false);
-                  }}
+                  onClick={handleLogout}
                   className="block w-full text-left text-red-600 hover:bg-gray-100 px-2 py-1 rounded"
                 >
                   Cerrar sesión

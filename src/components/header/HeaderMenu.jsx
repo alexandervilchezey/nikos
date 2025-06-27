@@ -13,7 +13,15 @@ export default function HeaderUserMenu() {
   const toggleMenu = () => setOpen(!open);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+
+      localStorage.removeItem("usuario");
+      sessionStorage.removeItem("usuario");
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   useEffect(() => {

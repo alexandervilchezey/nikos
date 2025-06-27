@@ -17,8 +17,15 @@ export default function AdminLayout() {
   }, [navigate]);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/login');
+    try {
+      await signOut(auth);
+
+      localStorage.removeItem("usuario");
+      sessionStorage.removeItem("usuario");
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   return (
@@ -52,6 +59,10 @@ export default function AdminLayout() {
           <Link to="/admin/productos" className="hover:text-gray-300 flex items-center gap-2 text-lg">
             <i className="bx bx-box text-lg"></i>
             {!isCollapsed && 'Productos'}
+          </Link>
+          <Link to="/admin/usuarios" className="hover:text-gray-300 flex items-center gap-2 text-lg">
+            <i className="bx bx-community text-lg"></i>
+            {!isCollapsed && 'Usuarios'}
           </Link>
         </nav>
         <div className="mt-auto">

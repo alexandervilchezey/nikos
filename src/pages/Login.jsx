@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase/firebase'; // Asegúrate de exportar `db` desde firebase.js
+import { auth, db } from '../firebase/firebase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -26,22 +26,45 @@ export default function Login() {
         return setError('Debes verificar tu correo antes de iniciar sesión.');
       }
 
-      // Obtener el rol del usuario desde Firestore
+      // Obtener datos del usuario en Firestore
       const userDocRef = doc(db, 'usuarios', user.uid);
       const userDoc = await getDoc(userDocRef);
 
+      if (userDoc.exists() && userDoc.data().active === false) {
+        await auth.signOut();
+        return setError('Tu cuenta ha sido desactivada. Contacta con soporte.');
+      }
+
       if (!userDoc.exists()) {
         await auth.signOut();
-        return setError('Tu cuenta no tiene rol asignado. Contacta con soporte.');
+        return setError('Tu cuenta presenta errores. Contacta con soporte.');
       }
 
       const userData = userDoc.data();
-      const rol = userData.rol;
+      const { rol, usuarioMayorista = false } = userData;
+
+      // Limpia antes de guardar
+      localStorage.removeItem('usuario');
+      sessionStorage.removeItem('usuario');
+
+      // Guarda solo lo esencial
+      const sessionData = JSON.stringify({
+        uid: user.uid,
+        rol,
+        usuarioMayorista
+      });
+
+      if (remember) {
+        localStorage.setItem('usuario', sessionData);
+      } else {
+        localStorage.setItem('usuario', sessionData);
+        sessionStorage.setItem('usuario', sessionData);
+      }
 
       if (rol === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        navigate('/'); // o la página principal de compra
+        navigate('/');
       }
 
     } catch (err) {
@@ -142,7 +165,7 @@ export default function Login() {
             onClick={() => navigate('/')}
             className="text-black hover:underline"
           >
-            Volver a la pagina principal
+            Volver a la página principal
           </button>
         </p>
       </form>

@@ -50,8 +50,9 @@ export default function Register() {
         uid: user.uid,
         email: user.email,
         rol: 'cliente',
-        mayorista: false,
+        usuarioMayorista: false,
         nombre: form.name,
+        active: true,
         apellido: form.lastname,
         creadoEn: new Date()
       });

@@ -16,10 +16,11 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import PerfilUsuario from './pages/PerfilUsuario';
 import ComprasUsuario from './pages/ComprasUsuario';
 import AdminLayout from './admin/AdminLayout';
-import Dashboard from './admin/Dashboard';
 import ProductosAdmin from './admin/ProductosAdmin';
 import FiltrosAdmin from './admin/FiltrosAdmin';
 import VentasAdmin from './admin/VentasAdmin';
+import UsuariosAdmin from './admin/UsuariosAdmin';
+import DashboardAdmin from './admin/DashboardAdmin';
 
 function App() {
 
@@ -59,10 +60,11 @@ function App() {
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<DashboardAdmin />} />
           <Route path="productos" element={<ProductosAdmin />} />
           <Route path="filtros" element={<FiltrosAdmin />} />
           <Route path="ventas" element={<VentasAdmin />} />
+          <Route path="usuarios" element={<UsuariosAdmin />} />
         </Route>
           
       </Routes>

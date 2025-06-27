@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import {
   collection,
   getDocs,
@@ -10,7 +10,8 @@ import { db } from "../firebase/firebase";
 
 import ModalFiltros from "../components/reusable/ModalFiltros";
 import Filtros from "../components/products/Filtros";
-import placeholder from '../assets/images/no-photo.JPG';
+// import placeholder from '../assets/images/no-photo.JPG';
+import ProductItem from "../components/reusable/ProductItem";
 
 export default function ProductosPage() {
   const [filters, setFilters] = useState({
@@ -40,7 +41,7 @@ export default function ProductosPage() {
   const [cantidadVisible, setCantidadVisible] = useState(6);
   const [cargando, setCargando] = useState(true);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const cerrarModalConAnimacion = () => {
     setAnimatingClose(true);
@@ -50,9 +51,9 @@ export default function ProductosPage() {
     }, 400);
   };
 
-  const handleClick = (producto) => {
-    navigate(`/productos/${producto.slug}`);
-  };
+  // const handleClick = (producto) => {
+  //   navigate(`/productos/${producto.slug}`);
+  // };
 
   const buildQuery = () => {
     const baseRef = collection(db, "productos");
@@ -111,7 +112,6 @@ export default function ProductosPage() {
               (v) => v.color?.toLowerCase() === c.toLowerCase()
             )
           );
-          console.log(cumpleColor)
         return (
           cumpleTipo &&
           cumpleMaterial &&
@@ -236,46 +236,17 @@ export default function ProductosPage() {
                 <i className="bx bx-filter"></i>
               </button>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {productos.slice(0, cantidadVisible).map((producto) => (
-                <div
-                  key={producto.id}
-                  onClick={() => handleClick(producto)}
-                  className="cursor-pointer bg-white transition duration-300 flex flex-col"
-                >
-                  <div className="w-full aspect-square overflow-hidden">
-                    <img
-                      src={producto.imagenes?.[0] || placeholder}
-                      alt={producto.nombre}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-2">
-                    <h2 className="text-base text-gray-900 leading-snug break-words mb-1">
-                      {producto.nombre}
-                    </h2>
-                    <div className="text-sm text-gray-500 mb-2">{producto.marca}</div>
-                    <div className="flex flex-wrap items-center space-x-2">
-                      <span className="font-semibold text-gray-800 mr-2">s/.{producto.precio}</span>
-                      {producto.precioDescuento && (
-                        <>
-                          <span className="text-sm text-gray-400 line-through">
-                            s/.{producto.precioDescuento}
-                          </span>
-                          <span className="text-sm text-green-500 font-semibold w-full">
-                            -{Math.round(
-                              100 - (producto.precioDescuento / producto.precio) * 100
-                            )}%
-                          </span>
-                        </>
-                      )}
-                    </div>
+            <div className="bycats tabbed !p-0">
+              <div className="sort-data">
+                <div className="dotgrid">
+                  <div className="wrapper grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {productos.slice(0, cantidadVisible).map((producto, i) => (
+                      <ProductItem key={producto.id || i} producto={producto} />
+                    ))}
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-
             {cantidadVisible < productos.length && (
               <div className="text-center mt-6">
                 <button

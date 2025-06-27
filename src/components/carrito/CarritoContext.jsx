@@ -55,7 +55,7 @@ export function CarritoProvider({ children }) {
         ) {
           return {
             ...item,
-            cantidad: Math.max(1, Math.min(nuevaCantidad, 3)), // entre 1 y 3
+            cantidad: nuevaCantidad,
           };
         }
         return item;

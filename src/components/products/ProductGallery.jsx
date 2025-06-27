@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import { FreeMode, Thumbs, Pagination } from "swiper/modules";
 
 import placeholder from "../../assets/images/no-photo.JPG";
+import { optimizarImagenCloudinary } from "../../utils/generalFunctions";
 
 export default function ProductGallery({ producto, varianteIndex }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -55,7 +56,8 @@ export default function ProductGallery({ producto, varianteIndex }) {
           {imagenes.map((src, index) => (
             <SwiperSlide key={index}>
               <img
-                src={src}
+                src={optimizarImagenCloudinary(src)}
+                loading="lazy"
                 onClick={() => handleThumbClick(src, index)}
                 className={`object-cover w-full h-20 cursor-pointer rounded border 
                   ${imagenSeleccionada === src ? "ring-2 ring-black" : ""}`}
@@ -79,7 +81,8 @@ export default function ProductGallery({ producto, varianteIndex }) {
         {imagenes.map((src, index) => (
           <SwiperSlide key={index}>
             <img
-              src={src}
+              src={optimizarImagenCloudinary(src)}
+              loading="lazy"
               className="object-contain w-full h-full"
               alt={`Imagen ${index}`}
             />

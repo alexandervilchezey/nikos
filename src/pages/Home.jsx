@@ -27,7 +27,7 @@ const Home = () => {
         .filter(f => f.tipo === 'marca')
         .map(f => ({
           nombre: f.valor,
-          imagen: f.imagen || '/placeholder.jpg'
+          imagen: f.imagen
         }));
 
       const usuariosFiltrados = ordenUsuarios

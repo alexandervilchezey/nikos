@@ -1,5 +1,6 @@
 import { doc, getDoc, updateDoc, increment, setDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import placeholder from "../assets/images/no-photo.JPG";
 
 export const obtenerNuevoNumeroOrden = async () => {
   const docRef = doc(db, "config", "ordenes");
@@ -56,4 +57,13 @@ export const generarSlugUnico = async (nombre, idExistente = null) => {
   }
 
   return slug;
+};
+
+export const optimizarImagenCloudinary = (url) => {
+  if(url){
+    return url.replace("/upload/", "/upload/f_auto,q_auto/");
+  }else{
+    return placeholder;
+  }
+  
 };

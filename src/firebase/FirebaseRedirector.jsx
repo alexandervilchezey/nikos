@@ -9,7 +9,6 @@ export default function FirebaseRedirector() {
   useEffect(() => {
     const mode = params.get('mode');
     const oobCode = params.get('oobCode');
-    console.log('mode',mode);
     if (mode === 'verifyEmail' && oobCode) {
       navigate(`/verify-email?oobCode=${oobCode}`);
     } else if (mode === 'resetPassword' && oobCode) {

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { optimizarImagenCloudinary } from '../../utils/generalFunctions';
 
 export default function BrandsSection({ marcas = [] }) {
   useEffect(() => {
@@ -19,7 +20,7 @@ export default function BrandsSection({ marcas = [] }) {
       }
       requestAnimationFrame(scroll);
     };
-
+    console.log(marcas)
     scroll();
   }, [marcas]);
 
@@ -30,16 +31,22 @@ export default function BrandsSection({ marcas = [] }) {
           <div id="scrolling-container" className="wrapper overflow-x-auto whitespace-nowrap max-w-full">
             <div className="flex gap-2 py-2">
               {marcas.map((marca, i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 max-w-[220px] w-full bg-gray-100 rounded shadow p-4 flex items-center justify-center"
-                >
-                  <img
-                    src={marca.imagen || '/placeholder.jpg'}
-                    alt={marca.nombre}
-                    className="w-32 h-32 object-contain"
-                  />
-                </div>
+                <>
+                {marca.imagen && (
+                  <div
+                    key={i}
+                    className="flex-shrink-0 max-w-[220px] w-full bg-gray-100 rounded shadow p-4 flex items-center justify-center"
+                  >
+                    
+                      <img
+                        alt={marca.nombre}
+                        loading='lazy'
+                        src={optimizarImagenCloudinary(marca.imagen)}
+                        className="w-32 h-32 object-contain"
+                      />
+                  </div>
+                )}
+                </>
               ))}
             </div>
           </div>
