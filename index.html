@@ -1,31 +1,72 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/nikos/assets/vite-CKmNnMVJ.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:ital,wght@0,100..900;1,100..900&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
-    <link href='https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css' rel='stylesheet'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nikos Perú</title>
-    <script type="module" crossorigin src="/nikos/assets/index-DFciycZj.js"></script>
-    <link rel="stylesheet" crossorigin href="/nikos/assets/index-CMOenPuM.css">
+
+    <!-- Title & Basic SEO -->
+    <title>Nikos Perú - Moda y Estilo para Todos</title>
+    <meta name="description" content="Descubre la moda urbana y casual en Nikos Perú. Ropa de calidad para todos los estilos. Compra fácil, rápido y seguro.">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="Nikos Perú - Moda y Estilo" />
+    <meta property="og:description" content="Moda urbana y casual. Compra fácil, rápido y seguro." />
+    <meta property="og:image" content="https://alexandervilchezey.github.io/nikos/og-image.jpg" />
+    <meta property="og:url" content="https://alexandervilchezey.github.io/nikos/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nikos Perú - Moda y Estilo" />
+    <meta name="twitter:description" content="Ropa de calidad con estilo urbano y casual para todos." />
+    <meta name="twitter:image" content="https://alexandervilchezey.github.io/nikos/og-image.jpg" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/nikos/vite.svg" />
+
+    <!-- Preconnect para mejorar la carga de fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload de la fuente principal -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600&family=Libre+Franklin:wght@400;500&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600&family=Libre+Franklin:wght@400;500&display=swap" rel="stylesheet" media="all" />
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css" />
+    <link rel="stylesheet" href="https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css" />
+
+    <!-- CSS principal y JS de Vite -->
+    <link rel="stylesheet" href="/src/styles.css" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://alexandervilchezey.github.io/nikos/" />
+    <script type="module" crossorigin src="/nikos/assets/index-qBuj4o_U.js"></script>
+    <link rel="stylesheet" crossorigin href="/nikos/assets/index-B24dF7Gb.css">
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- Script principal de Vite -->
+
+    <!-- Redirección para GitHub Pages -->
+    <script>
+      const redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect !== location.href) {
+        history.replaceState(null, null, redirect);
+      }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVW2ZY9Y21"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZVW2ZY9Y21');
+    </script>
   </body>
-  <script>
-    // Redirección para GitHub Pages
-    // Soporta rutas de React Router
-    const redirect = sessionStorage.redirect;
-    delete sessionStorage.redirect;
-    if (redirect && redirect !== location.href) {
-      history.replaceState(null, null, redirect);
-    }
-  </script>
 </html>
