@@ -172,7 +172,7 @@ export default function Register() {
 
         <p className="text-sm text-center text-gray-600">
           ¿Ya tienes cuenta?{' '}
-          <a href="/nikos/login" className="text-black underline">
+          <a href="/login" className="text-black underline">
             Inicia sesión
           </a>
         </p>

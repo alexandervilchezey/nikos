@@ -41,15 +41,15 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
         <nav className="wrapper">
           <ul className="pt-2 space-y-2">
             <li>
-              <a className="block px-4 text-black" href="/nikos">Inicio</a>
+              <a className="block px-4 text-black" href="">Inicio</a>
             </li>
             <li>
-              <a className="block px-4 text-black" href="/nikos/productos">Productos</a>
+              <a className="block px-4 text-black" href="/productos">Productos</a>
             </li>
             <li>
               <a
                 className="block px-4 text-black"
-                href="/nikos/#marcas"
+                href="/#marcas"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Marcas
@@ -70,8 +70,8 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
         {/* Login/Register para visitantes */}
         {!user && (
           <div className="mt-auto p-4 flex flex-col space-y-2 gap-2">
-            <a href="/nikos/login" className="btn secondary-btn text-center bg-black text-white py-2 rounded">Iniciar Sesión</a>
-            <a href="/nikos/register" className="btn primary-btn text-center border border-black py-2 text-black rounded">Registrarse</a>
+            <a href="/login" className="btn secondary-btn text-center bg-black text-white py-2 rounded">Iniciar Sesión</a>
+            <a href="/register" className="btn primary-btn text-center border border-black py-2 text-black rounded">Registrarse</a>
           </div>
         )}
 

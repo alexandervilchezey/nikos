@@ -29,7 +29,7 @@ export default function HeaderRight({ setIsSearchOpen }) {
             {user ? (
               <HeaderUserMenu />
             ) : (
-              <a href="/nikos/login">
+              <a href="/login">
                 <i className='bx bx-user'></i>
               </a>
             )}
