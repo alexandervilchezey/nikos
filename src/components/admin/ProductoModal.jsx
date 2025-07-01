@@ -133,9 +133,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
   };
 
   const eliminarVariante = (idx) => {
-    setVariantes(v => v.filter((_, i) => i !== idx));
-    setPreviewUrls(p => p.filter((_, i) => i !== idx));
-    setImagenes(img => img.filter((_, i) => i !== idx));
+    setVariantes(prev => prev.filter((_, i) => i !== idx));
   };
 
   const actualizarVariante = (idx, campo, valor) => {
@@ -370,20 +368,19 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
           <label className="block text-sm font-medium mt-2">Imágenes (max. 9)</label>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2">
             
-            {previewUrls.map((src, idx) => (
-              <div key={idx} className="relative">
-                <img src={src} className="w-full h-20 object-cover rounded border" />
-                <button type="button" onClick={() => {
-                  const newPreviews = [...previewUrls];
-                  const newFiles = [...imagenes];
-                  newPreviews.splice(idx, 1);
-                  newFiles.splice(idx, 1);
-                  setPreviewUrls(newPreviews);
-                  setImagenes(newFiles);
-                  eliminarVariante(idx);
-                }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs">×</button>
-              </div>
-            ))}
+            {variantes.map((v, idx) => (
+  <div key={idx} className="relative">
+    <img src={v.imagenLocal || v.imagen} className="w-full h-20 object-cover rounded border" />
+    <button
+      type="button"
+      onClick={() => eliminarVariante(idx)}
+      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs"
+    >
+      ×
+    </button>
+  </div>
+))}
+
             {previewUrls.length < 9 && (
               <label className="border-2 border-dashed w-full h-20 flex items-center justify-center rounded cursor-pointer">
                 <span className="text-gray-500">+</span>
