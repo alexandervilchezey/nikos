@@ -1,4 +1,5 @@
 import nikosDatos from "../../utils/generalData";
+import whastApp_icon from "../../assets/images/WhatsApp_icon.png";
 export default function WhatsappFloat() {
   return (
     <a
@@ -9,7 +10,7 @@ export default function WhatsappFloat() {
       aria-label="Contáctanos por WhatsApp"
     >
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png"
+        src={whastApp_icon}
         alt="WhatsApp"
         width="50"
         height="50"

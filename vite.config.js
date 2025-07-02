@@ -12,6 +12,6 @@ export default defineConfig({
     port: 5173,
     strictPort: true, // lanza error si el puerto está en uso
     cors: true, // habilita CORS
-    allowedHosts: ['.ngrok-free.app', '.trycloudflare.com'], // permite conexiones desde dominios específicos
-  },
+    allowedHosts: [], // permite conexiones desde dominios específicos
+  }
 })
