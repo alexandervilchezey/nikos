@@ -49,7 +49,7 @@ export default function CarritoModal() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 pb-1 flex justify-between items-center">
+      <div className="px-4 pb-1 flex justify-between items-center button">
         <h2 className="text-xl font-bold">Mi Carrito</h2>
         {carrito.length > 0 && (
           <button

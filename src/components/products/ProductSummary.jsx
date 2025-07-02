@@ -100,6 +100,7 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
                 key={index}
                 src={optimizarImagenCloudinary(variante.imagen)}
                 alt={`Variante de color ${variante.color || index + 1}`}
+                title={`${variante.color || index + 1}`}
                 onClick={() => {
                   setVarianteIndex(index);
                   setTallaSelected('');
@@ -131,7 +132,7 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
                     disabled={stock === 0}
                     className={`px-3 py-1 border rounded mx-1 my-1 
                       ${stock === 0 ? 'opacity-50 cursor-not-allowed bg-gray-200 text-gray-500' : 'cursor-pointer'} 
-                      ${tallaSelected === talla ? 'selected bg-black text-white' : ''}`}
+                      ${tallaSelected === talla ? 'selected' : ''}`}
                     aria-label={`Seleccionar talla ${talla}${stock === 0 ? ' (sin stock)' : ''}`}
                   >
                     {talla}
@@ -149,7 +150,7 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
               aria-label="Disminuir cantidad"
             >-</button>
             <input
-              className="w-[50px] border text-center"
+              className="w-[50px] h-[40px] border text-center"
               readOnly
               type="number"
               value={countProducts}

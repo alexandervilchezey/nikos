@@ -1,9 +1,8 @@
-const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
+import nikosDatos from "../../utils/generalData";
 export default function WhatsappFloat() {
-  const numeroTelefono = numeroWhatsApp || '51944788568';
   return (
     <a
-      href={`https://wa.me/${numeroTelefono}`}
+      href={`https://wa.me/${nikosDatos.whatsapp}`}
       className="whatsapp-float"
       target="_blank"
       rel="noopener noreferrer"

@@ -41,7 +41,7 @@ export default function ProductsCategory({ productos, usuarios }) {
       <div className="wrap">
         {usuarios.length > 0 && selectedUsuario && (
           <div className="mt-5 md:mt-0 heading sort-list tabs">
-            <span className="grey-color mr-3">in</span>
+            <span className="grey-color mr-3">Ver en</span>
             <MainCategorySelector
               options={usuarios}
               initial={usuarios[0]}

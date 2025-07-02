@@ -248,7 +248,7 @@ export default function ProductosPage() {
               </div>
             </div>
             {cantidadVisible < productos.length && (
-              <div className="text-center mt-6">
+              <div className="text-center mt-6 button">
                 <button
                   onClick={() => setCantidadVisible(cantidadVisible + 6)}
                   className="btn secondary-btn border px-4 py-2"

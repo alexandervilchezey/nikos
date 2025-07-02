@@ -9,8 +9,7 @@ import ubicacionesPeru from "../utils/ubicacionesPeru";
 import { collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase";
 import { generarMensajeWhatsApp, obtenerNuevoNumeroOrden, optimizarImagenCloudinary } from "../utils/generalFunctions";
-
-const numeroWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER;
+import nikosDatos from "../utils/generalData";
 
 export default function CheckoutPage() {
   const { carrito, vaciarCarrito } = useCarrito();
@@ -85,7 +84,7 @@ export default function CheckoutPage() {
     }, 0);
   }, [carrito, isMayorista]);
 
-  // ✅ Al enviar el formulario
+  // Al enviar el formulario
   const onSubmit = async (data) => {
     setLoading(true);
     if (!isValid) {
@@ -107,7 +106,7 @@ export default function CheckoutPage() {
       });
 
       const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total);
-      const urlWhatsApp = `https://wa.me/${numeroWhatsApp || "51944788568"}?text=${encodeURIComponent(mensaje)}`;
+      const urlWhatsApp = `https://wa.me/${nikosDatos.whatsapp}?text=${encodeURIComponent(mensaje)}`;
       window.open(urlWhatsApp, "_blank");
       setLoading(false);
       setModalVisible(true);
