@@ -44,7 +44,7 @@ export default function Footer({datos}) {
           </div>
         </div>
         <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm">
-          v.1.0.7.1 © {new Date().getFullYear()} Nikos. Todos los derechos reservados.
+          v.1.0.7.2 © {new Date().getFullYear()} Nikos. Todos los derechos reservados.
         </div>
       </footer>
     </div>
