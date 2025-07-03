@@ -211,11 +211,11 @@ export default function UsuariosAdmin() {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow max-w-sm w-full text-center">
             <p className="mb-4 text-gray-800">
-              {modal.tipo === "rol" &&
+              {modal.tipo === "cambiarRol" &&
                 `¿Cambiar rol de ${modal.usuario.nombre} a ${
                   modal.usuario.rol === "admin" ? "cliente" : "admin"
                 }?`}
-              {modal.tipo === "mayorista" &&
+              {modal.tipo === "cambiarMayorista" &&
                 `¿Cambiar estado mayorista a ${
                   modal.usuario.usuarioMayorista ? "NO" : "SÍ"
                 } para ${modal.usuario.nombre}?`}
@@ -233,8 +233,8 @@ export default function UsuariosAdmin() {
               </button>
               <button
                 onClick={() => {
-                  if (modal.tipo === "rol") cambiarRol(modal.usuario);
-                  if (modal.tipo === "mayorista")
+                  if (modal.tipo === "cambiarRol") cambiarRol(modal.usuario);
+                  if (modal.tipo === "cambiarMayorista")
                     cambiarMayorista(modal.usuario);
                   if (modal.tipo === "eliminar") eliminarUsuario(modal.usuario);
                   if (modal.tipo === "activar") activarUsuario(modal.usuario);

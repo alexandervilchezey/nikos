@@ -22,7 +22,7 @@ export default function Footer({datos}) {
           <div>
             <h3 className="font-semibold text-lg mb-3">Contacto</h3>
             <ul className="space-y-2 text-sm">
-              <li>Tel: {datos.telefono}</li>
+              <li>Tel: +51 {datos.telefono}</li>
               <li>Dirección: {datos.direccion}</li>
               <li>Horario: {datos.horario}</li>
             </ul>
@@ -44,7 +44,7 @@ export default function Footer({datos}) {
           </div>
         </div>
         <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm">
-          v.1.0.7.2 © {new Date().getFullYear()} Nikos. Todos los derechos reservados.
+          v.1.0.7.3 © {new Date().getFullYear()} Nikos. Todos los derechos reservados.
         </div>
       </footer>
     </div>

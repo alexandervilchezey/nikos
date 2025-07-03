@@ -50,14 +50,13 @@ export default function ConfiguracionAdmin() {
     setError(false);
 
     try {
-      const telefonoFormateado = `+51 ${form.telefono}`;
       const whatsapp = `51${form.telefono}`;
       await setDoc(doc(db, "config", "datosFooter"), {
         direccion: form.direccion,
         instagram: form.instagram,
         facebook: form.facebook,
         horario: form.horario,
-        telefono: telefonoFormateado,
+        telefono: form.telefono,
         whatsapp: whatsapp,
       });
       setMensaje("Cambios guardados correctamente.");
@@ -78,7 +77,7 @@ export default function ConfiguracionAdmin() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FormField label="Dirección" name="direccion" value={form.direccion} onChange={handleChange} />
-        <FormField label="Teléfono (solo número)" name="telefono" value={form.telefono} onChange={handleChange} />
+        <FormField label="Teléfono (solo número sin código)" name="telefono" value={form.telefono} onChange={handleChange} />
         <FormField label="Instagram (URL)" name="instagram" value={form.instagram} onChange={handleChange} />
         <FormField label="Facebook (URL)" name="facebook" value={form.facebook} onChange={handleChange} />
         <FormField label="Horario de atención" name="horario" value={form.horario} onChange={handleChange} />
