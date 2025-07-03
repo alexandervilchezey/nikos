@@ -24,11 +24,11 @@ export function CarritoProvider({ children }) {
       if (index !== -1) {
         const actualizado = [...prev];
         const nuevaCantidad = actualizado[index].cantidad + productoNuevo.cantidad;
-        actualizado[index].cantidad = Math.min(nuevaCantidad, 3); // máximo 3 unidades
+        actualizado[index].cantidad = nuevaCantidad;
         return actualizado;
       }
 
-      return [...prev, { ...productoNuevo, cantidad: Math.min(productoNuevo.cantidad, 3) }];
+      return [...prev, { ...productoNuevo, cantidad: productoNuevo.cantidad }];
     });
   };
 

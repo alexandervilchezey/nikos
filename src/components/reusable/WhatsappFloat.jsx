@@ -1,9 +1,8 @@
-import nikosDatos from "../../utils/generalData";
 import whastApp_icon from "../../assets/images/WhatsApp_icon.png";
-export default function WhatsappFloat() {
+export default function WhatsappFloat({whatsapp}) {
   return (
     <a
-      href={`https://wa.me/${nikosDatos.whatsapp}`}
+      href={`https://wa.me/${whatsapp}`}
       className="whatsapp-float"
       target="_blank"
       rel="noopener noreferrer"

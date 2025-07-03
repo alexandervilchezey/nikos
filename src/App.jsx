@@ -21,7 +21,7 @@ import FiltrosAdmin from './admin/FiltrosAdmin';
 import VentasAdmin from './admin/VentasAdmin';
 import UsuariosAdmin from './admin/UsuariosAdmin';
 import DashboardAdmin from './admin/DashboardAdmin';
-
+import ConfiguracionAdmin from './admin/ConfiguracionAdmin';
 function App() {
 
   return (
@@ -65,6 +65,7 @@ function App() {
           <Route path="filtros" element={<FiltrosAdmin />} />
           <Route path="ventas" element={<VentasAdmin />} />
           <Route path="usuarios" element={<UsuariosAdmin />} />
+          <Route path="configuracion" element={<ConfiguracionAdmin />} />
         </Route>
           
       </Routes>

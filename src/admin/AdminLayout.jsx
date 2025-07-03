@@ -64,6 +64,10 @@ export default function AdminLayout() {
             <i className="bx bx-community text-lg"></i>
             {!isCollapsed && 'Usuarios'}
           </Link>
+          <Link to="/admin/configuracion" className="hover:text-gray-300 flex items-center gap-2 text-lg">
+            <i className="bx bx-cog text-lg"></i>
+            {!isCollapsed && 'Configuracion'}
+          </Link>
         </nav>
         <div className="mt-auto">
           <button

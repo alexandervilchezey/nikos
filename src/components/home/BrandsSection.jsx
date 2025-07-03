@@ -20,7 +20,6 @@ export default function BrandsSection({ marcas = [] }) {
       }
       requestAnimationFrame(scroll);
     };
-    console.log(marcas)
     scroll();
   }, [marcas]);
 

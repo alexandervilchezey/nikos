@@ -33,6 +33,7 @@ export default function CarritoModal() {
     } else {
       setAvisoMayorista('');
     }
+    console.log(avisoMayorista);
     actualizarCantidad(item.slug, item.talla, item.color, nuevaCantidad);
   };
 
@@ -147,11 +148,9 @@ export default function CarritoModal() {
             <span>Total:</span>
             <span className="font-semibold">S/ {calcularTotal.toFixed(2)}</span>
           </div>
-          {avisoMayorista !== '' && (
-            <p className="text-xs text-gray-400 mb-3">
-              Si deseas hacer compras al por mayor, comunícate con nosotros para acceder a mejores precios.
-            </p>
-          )}
+          <p className="text-xs text-gray-400 mb-3">
+            Si deseas hacer compras al por mayor, comunícate con nosotros para acceder a mejores precios.
+          </p>
           <button
             onClick={irACheckout}
             className="w-full bg-green-600 hover:bg-green-700 py-2 rounded text-white font-semibold transition"

@@ -1,4 +1,3 @@
-// src/pages/UsuariosAdmin.jsx
 import { useState, useEffect } from "react";
 import {
   collection,

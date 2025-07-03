@@ -22,7 +22,6 @@ export default function ProductItem({ producto, onClose }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const usuarioDoc = JSON.parse(localStorage.getItem('usuario'));
-        console.log(usuarioDoc)
         setUsuarioMayorista(usuarioDoc?.usuarioMayorista || false);
       } else {
         setUsuarioMayorista(false);

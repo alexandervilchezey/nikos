@@ -135,7 +135,7 @@ export default function DashboardAdmin() {
                 {
                   label: "Ventas (S/.)",
                   data: valores,
-                  backgroundColor: "#60A5FA", // azul claro
+                  backgroundColor: "#60A5FA",
                 },
               ],
             }}

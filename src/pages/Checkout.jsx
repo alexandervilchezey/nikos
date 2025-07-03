@@ -9,7 +9,6 @@ import ubicacionesPeru from "../utils/ubicacionesPeru";
 import { collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase";
 import { generarMensajeWhatsApp, obtenerNuevoNumeroOrden, optimizarImagenCloudinary } from "../utils/generalFunctions";
-import nikosDatos from "../utils/generalData";
 
 export default function CheckoutPage() {
   const { carrito, vaciarCarrito } = useCarrito();
@@ -24,6 +23,7 @@ export default function CheckoutPage() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [numeroWhatsApp, setNumeroWhatsApp] = useState(null);
 
   const isMayorista = useMemo(() => {
     try {
@@ -74,6 +74,23 @@ export default function CheckoutPage() {
     }
   }, [reset]);
 
+  useEffect(() => {
+  const fetchWhatsApp = async () => {
+    try {
+      const ref = doc(db, "config", "datosFooter");
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        setNumeroWhatsApp(snap.data().whatsapp || null);
+      }
+    } catch (error) {
+      console.error("Error al obtener número de WhatsApp:", error);
+    }
+  };
+
+  fetchWhatsApp();
+}, []);
+
+
   // ✅ Cálculo del total usando el precio correcto
   const total = useMemo(() => {
     return carrito.reduce((acc, item) => {
@@ -106,7 +123,12 @@ export default function CheckoutPage() {
       });
 
       const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total);
-      const urlWhatsApp = `https://wa.me/${nikosDatos.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+      if (!numeroWhatsApp) {
+        console.error("Número de WhatsApp no disponible.");
+        setLoading(false);
+        return;
+      }
+      const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
       window.open(urlWhatsApp, "_blank");
       setLoading(false);
       setModalVisible(true);
