@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react';
 import { db } from '../firebase/firebase';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  getDoc
+} from 'firebase/firestore';
+
 import ProductoModal from '../components/admin/ProductoModal';
 import Modal from '../components/reusable/Modal';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import PDFCatalog from '../components/admin/PDFCatalog';
 
 export default function ProductosAdmin() {
   const [productos, setProductos] = useState([]);
@@ -16,11 +25,16 @@ export default function ProductosAdmin() {
   const [modalEliminar, setModalEliminar] = useState(false);
   const [disponibles, setDisponibles] = useState({});
 
+  const [contacto, setContacto] = useState({
+    email: '',
+    telefono: '',
+    web: '',
+    horario: ''
+  });
+
   const abrirNuevo = () => {
     setProductoEdit(null);
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 0);
+    setTimeout(() => setIsOpen(true), 0);
   };
 
   const editar = (producto) => {
@@ -40,31 +54,31 @@ export default function ProductosAdmin() {
     setModalEliminar(false);
   };
 
+  // Productos
   useEffect(() => {
     const obtenerDatos = async () => {
       const querySnapshot = await getDocs(collection(db, 'productos'));
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       setProductos(data);
     };
     obtenerDatos();
   }, [isOpen]);
 
+  // Filtros
   useEffect(() => {
     const obtenerFiltros = async () => {
       const querySnapshot = await getDocs(collection(db, 'filtros'));
-
-      const filtros = querySnapshot.docs.map(doc => ({
-        ...doc.data()
-      }));
+      const filtros = querySnapshot.docs.map((doc) => doc.data());
 
       const agrupados = filtros.reduce((acc, curr) => {
         const key = curr.tipo;
         if (!acc[key]) acc[key] = [];
-
-        if (!acc[key].some(item => item.valor === curr.valor)) {
+        if (!acc[key].some((item) => item.valor === curr.valor)) {
           acc[key].push(curr);
         }
-
         return acc;
       }, {});
 
@@ -74,15 +88,31 @@ export default function ProductosAdmin() {
     obtenerFiltros();
   }, []);
 
+  // Footer config
+  useEffect(() => {
+    const obtenerContactoDesdeConfig = async () => {
+      const docRef = doc(db, 'config', 'datosFooter');
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setContacto(data);
+      }
+    };
+
+    obtenerContactoDesdeConfig();
+  }, []);
 
   const filtrarYOrdenar = () => {
-    let filtrados = productos.filter(p => p.nombre.toLowerCase().includes(filtroNombre.toLowerCase()));
+    let filtrados = productos.filter((p) =>
+      p.nombre.toLowerCase().includes(filtroNombre.toLowerCase())
+    );
 
-    if (orden === 'recientes') {
-      filtrados.sort((a, b) => b.creadoEn?.seconds - a.creadoEn?.seconds);
-    } else {
-      filtrados.sort((a, b) => a.creadoEn?.seconds - b.creadoEn?.seconds);
-    }
+    filtrados.sort((a, b) =>
+      orden === 'recientes'
+        ? b.creadoEn?.seconds - a.creadoEn?.seconds
+        : a.creadoEn?.seconds - b.creadoEn?.seconds
+    );
 
     return filtrados;
   };
@@ -96,11 +126,37 @@ export default function ProductosAdmin() {
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Gestión de Productos</h2>
-        <button onClick={abrirNuevo} className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-          + Nuevo Producto
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={abrirNuevo}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+          >
+            + Nuevo Producto
+          </button>
+          <PDFDownloadLink
+            document={
+              <PDFCatalog
+                products={productosFiltrados}
+                contacto={contacto}
+              />
+            }
+            fileName="catalogo-nikos.pdf"
+          >
+            {productosFiltrados.length > 0 && (
+              ({ loading }) => (
+                <button
+                  disabled={loading}
+                  className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {loading ? 'Cargando...' : 'Descargar Catálogo'}
+                </button>
+              )
+            )}
+          </PDFDownloadLink>
+        </div>
       </div>
 
+      {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-4">
         <input
           type="text"
@@ -119,6 +175,7 @@ export default function ProductosAdmin() {
         </select>
       </div>
 
+      {/* Tabla */}
       <div className="overflow-x-auto">
         <table className="min-w-full border text-sm">
           <thead className="bg-gray-100 text-gray-700">
@@ -138,21 +195,25 @@ export default function ProductosAdmin() {
                 <td className="py-2 px-4 border">S/ {producto.precio}</td>
                 <td className="py-2 px-4 border">S/ {producto.precioMayorista}</td>
                 <td className="py-2 px-4 border">
-                  {typeof producto.marca === 'object' ? producto.marca?.valor : producto.marca}
+                  {typeof producto.marca === 'object'
+                    ? producto.marca?.valor
+                    : producto.marca}
                 </td>
-                <td className="py-2 px-4 border">{(producto.material || []).join(', ')}</td>
-                <td className="py-2 px-4 flex justify-center gap-2 text-center space-x-2">
+                <td className="py-2 px-4 border">
+                  {(producto.material || []).join(', ')}
+                </td>
+                <td className="py-2 px-4 flex justify-center gap-2 text-center">
                   <button
                     onClick={() => editar(producto)}
                     className="p-2 text-blue-600 hover:underline"
                   >
-                    <i className='bx bx-pencil'></i>
+                    <i className="bx bx-pencil"></i>
                   </button>
                   <button
                     onClick={() => confirmarEliminar(producto)}
                     className="p-2 text-red-600 hover:underline"
                   >
-                    <i className='bx bx-trash'></i>
+                    <i className="bx bx-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -160,6 +221,7 @@ export default function ProductosAdmin() {
           </tbody>
         </table>
 
+        {/* Paginación */}
         <div className="flex justify-between items-center mt-4 text-sm">
           <button
             onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
@@ -168,7 +230,9 @@ export default function ProductosAdmin() {
           >
             Anterior
           </button>
-          <span className="text-gray-600">Página {paginaActual} de {totalPaginas}</span>
+          <span className="text-gray-600">
+            Página {paginaActual} de {totalPaginas}
+          </span>
           <button
             onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
             disabled={paginaActual === totalPaginas}
@@ -179,6 +243,7 @@ export default function ProductosAdmin() {
         </div>
       </div>
 
+      {/* Modal Producto */}
       <ProductoModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -186,10 +251,13 @@ export default function ProductosAdmin() {
         disponibles={disponibles}
       />
 
+      {/* Modal Eliminar */}
       <Modal isOpen={modalEliminar} onClose={() => setModalEliminar(false)}>
         <div className="w-full max-w-md relative">
           <h2 className="text-xl font-semibold mb-2">Eliminar producto</h2>
-          <p className="mb-4">¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?</p>
+          <p className="mb-4">
+            ¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?
+          </p>
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setModalEliminar(false)}
