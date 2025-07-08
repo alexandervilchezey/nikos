@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Bar } from "react-chartjs-2";
@@ -24,12 +24,53 @@ function restarDias(fecha, dias) {
   return copia;
 }
 
+function parseFechaInicio(fechaStr) {
+  return new Date(`${fechaStr}T00:00:00`);
+}
+
+function parseFechaFin(fechaStr) {
+  return new Date(`${fechaStr}T23:59:59.999`);
+}
+
+function filtrarVentasPorFecha(ventas, fechaInicioStr, fechaFinStr) {
+  const desde = parseFechaInicio(fechaInicioStr);
+  const hasta = parseFechaFin(fechaFinStr);
+
+  return ventas.filter((v) => {
+    const fecha = v.creadoEn?.toDate?.();
+    if (!fecha) return false;
+    return fecha >= desde && fecha <= hasta;
+  });
+}
+
+function obtenerDetalleProductos(ventasFiltradas) {
+  const detalleMap = {};
+  ventasFiltradas.forEach((venta) => {
+    (venta.carrito || []).forEach((item) => {
+      const clave = `${item.nombre}_${item.color}_${item.talla}_${item.tipoCalzado || "—"}`;
+      if (!detalleMap[clave]) {
+        detalleMap[clave] = {
+          nombre: item.nombre,
+          color: item.color || "—",
+          talla: item.talla || "—",
+          usuario: item.usuario || "—",
+          cantidad: 0
+        };
+      }
+      detalleMap[clave].cantidad += item.cantidad;
+    });
+  });
+
+  return Object.values(detalleMap).sort((a, b) => b.cantidad - a.cantidad);
+}
+
 export default function DashboardAdmin() {
   const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
   const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const hoy = new Date();
   const hace7dias = restarDias(hoy, 7);
@@ -54,25 +95,28 @@ export default function DashboardAdmin() {
     fetchAll();
   }, []);
 
-  if (loading) return <div className="p-6">Cargando dashboard...</div>;
+  const ventasFiltradas = useMemo(() => {
+    return filtrarVentasPorFecha(ventas, fechaInicio, fechaFin);
+  }, [ventas, fechaInicio, fechaFin]);
 
-  const ventasFiltradas = ventas.filter((v) => {
-    const fecha = v.creadoEn?.toDate?.();
-    if (!fecha) return false;
-    const desde = new Date(fechaInicio);
-    const hasta = new Date(fechaFin);
-    return fecha >= desde && fecha <= hasta;
-  });
+  const totalVentas = useMemo(() => {
+    return ventasFiltradas.reduce((acc, v) => acc + (v.total || 0), 0);
+  }, [ventasFiltradas]);
 
-  const totalVentas = ventasFiltradas.reduce((acc, v) => acc + (v.total || 0), 0);
-  const ventasPorDia = {};
+  const ventasPorDia = useMemo(() => {
+    const mapa = {};
+    ventasFiltradas.forEach((v) => {
+      const fecha = v.creadoEn?.toDate();
+      if (!fecha) return;
+      const key = formatFecha(fecha);
+      mapa[key] = (mapa[key] || 0) + (v.total || 0);
+    });
+    return mapa;
+  }, [ventasFiltradas]);
 
-  ventasFiltradas.forEach((v) => {
-    const fecha = v.creadoEn?.toDate();
-    if (!fecha) return;
-    const key = formatFecha(fecha);
-    ventasPorDia[key] = (ventasPorDia[key] || 0) + (v.total || 0);
-  });
+  const detalleProductos = useMemo(() => {
+    return obtenerDetalleProductos(ventasFiltradas);
+  }, [ventasFiltradas]);
 
   const fechas = Object.keys(ventasPorDia).sort();
   const valores = fechas.map((f) => ventasPorDia[f]);
@@ -92,6 +136,8 @@ export default function DashboardAdmin() {
     .filter((v) => v.creadoEn?.toDate)
     .sort((a, b) => b.creadoEn.toDate() - a.creadoEn.toDate())
     .slice(0, 5);
+
+  if (loading) return <div className="p-6">Cargando dashboard...</div>;
 
   return (
     <div className="max-w-7xl mx-auto gap-4">
@@ -124,8 +170,9 @@ export default function DashboardAdmin() {
           />
         </div>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Gráfico de ventas */}
+        {/* Gráfico */}
         <div className="bg-white rounded shadow p-4">
           <h2 className="font-semibold mb-2">Ventas por día</h2>
           <Bar
@@ -159,7 +206,8 @@ export default function DashboardAdmin() {
             }}
           />
         </div>
-        {/* Top productos más vendidos */}
+
+        {/* Top productos */}
         <div className="bg-white rounded shadow p-4 overflow-auto">
           <h2 className="font-semibold mb-2">Top 5 productos más vendidos</h2>
           <table className="min-w-full text-sm">
@@ -179,12 +227,13 @@ export default function DashboardAdmin() {
             </tbody>
           </table>
           <button
-            onClick={() => navigate("/admin/productos")}
+            onClick={() => setModalVisible(true)}
             className="mt-3 text-blue-600 hover:underline text-sm"
           >
-            Ver todos los productos →
+            Ver todos los productos vendidos →
           </button>
         </div>
+
         {/* Últimos usuarios */}
         <div className="bg-white rounded shadow p-4 overflow-auto">
           <h2 className="font-semibold mb-2">Últimos 5 usuarios</h2>
@@ -205,7 +254,14 @@ export default function DashboardAdmin() {
                     <td className="px-2 py-1">{u.nombre} {u.apellido}</td>
                     <td className="px-2 py-1">{u.email || "—"}</td>
                     <td className="px-2 py-1">
-                      {u.creadoEn?.toDate().toLocaleString("es-PE")}
+                      {u.creadoEn?.toDate().toLocaleString("es-PE", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
                     </td>
                   </tr>
                 ))}
@@ -218,6 +274,7 @@ export default function DashboardAdmin() {
             Ver todos los usuarios →
           </button>
         </div>
+
         {/* Últimas ventas */}
         <div className="bg-white rounded shadow p-4 overflow-auto">
           <h2 className="font-semibold mb-2">Últimas 5 ventas</h2>
@@ -234,7 +291,16 @@ export default function DashboardAdmin() {
                 <tr key={orden.id} className="border-b">
                   <td className="px-2 py-1">#{String(orden.numeroOrden).padStart(4, "0")}</td>
                   <td className="px-2 py-1">S/. {orden.total?.toFixed(2)}</td>
-                  <td className="px-2 py-1">{orden.creadoEn?.toDate().toLocaleDateString("es-PE")}</td>
+                  <td className="px-2 py-1">
+                    {orden.creadoEn?.toDate().toLocaleString("es-PE", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -246,8 +312,44 @@ export default function DashboardAdmin() {
             Ver todas las ventas →
           </button>
         </div>
-
       </div>
+
+      {/* Modal de productos vendidos */}
+      {modalVisible && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white max-w-5xl w-full max-h-[80vh] overflow-y-auto rounded-lg shadow p-6 relative">
+            <h2 className="text-xl font-bold mb-4">Todos los productos vendidos</h2>
+            <table className="w-full text-sm border">
+              <thead className="bg-gray-100 text-gray-600">
+                <tr>
+                  <th className="text-left px-2 py-1">Producto</th>
+                  <th className="text-left px-2 py-1">Color</th>
+                  <th className="text-left px-2 py-1">Talla</th>
+                  <th className="text-left px-2 py-1">Usuario</th>
+                  <th className="text-left px-2 py-1">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detalleProductos.map((p, i) => (
+                  <tr key={i} className="border-b">
+                    <td className="px-2 py-1">{p.nombre}</td>
+                    <td className="px-2 py-1">{p.color}</td>
+                    <td className="px-2 py-1">{p.talla}</td>
+                    <td className="px-2 py-1">{p.usuario}</td>
+                    <td className="px-2 py-1">{p.cantidad}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              onClick={() => setModalVisible(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-black"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

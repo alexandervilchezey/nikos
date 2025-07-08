@@ -10,7 +10,7 @@ export default function VentasAdmin() {
   const [paginaActual, setPaginaActual] = useState(1);
   const [modalDetalle, setModalDetalle] = useState(null);
   const [modalEstado, setModalEstado] = useState(null);
-  const [ordenAscendente, setOrdenAscendente] = useState(true);
+  const [ordenAscendente, setOrdenAscendente] = useState(false);
 
   const ordenesPorPagina = 6;
 
@@ -55,7 +55,8 @@ export default function VentasAdmin() {
       orden.numeroOrden,
       orden.cliente,
       orden.carrito,
-      orden.total
+      orden.total,
+      orden.mayorista
     );
     const numero = orden.cliente.telefono?.replace(/\D/g, "");
     if (!numero) return alert("Número de teléfono no válido");
@@ -91,7 +92,7 @@ export default function VentasAdmin() {
           <option value="">Todos los estados</option>
           <option value="pendiente">Pendiente</option>
           <option value="cancelado">Cancelado</option>
-          <option value="finalizado">Finalizado</option>
+          <option value="anulado">Anulado</option>
         </select>
       </div>
 
@@ -241,7 +242,7 @@ export default function VentasAdmin() {
               Estado actual: <strong>{modalEstado.estado}</strong>
             </p>
             <div className="flex flex-col gap-2 mb-4">
-              {["pendiente", "cancelado", "finalizado"].map((estado) => (
+              {["pendiente", "cancelado", "anulado"].map((estado) => (
                 <button
                   key={estado}
                   onClick={() => cambiarEstado(modalEstado, estado)}

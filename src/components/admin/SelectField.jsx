@@ -1,7 +1,20 @@
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
 
-export default function SelectField({ name, label, control, options, errors, isMulti = false, rules = {} }) {
+export default function SelectField({
+  name,
+  label,
+  control,
+  options,
+  errors,
+  isMulti = false,
+  rules = {},
+}) {
+  const customStyles = {
+    menuPortal: (base) => ({ ...base, zIndex: 60 }),
+    menu: (base) => ({ ...base, zIndex: 60 }),
+  };
+
   return (
     <div className="mb-4">
       {label && <label className="block text-sm font-medium mb-1">{label}</label>}
@@ -15,6 +28,8 @@ export default function SelectField({ name, label, control, options, errors, isM
             isMulti={isMulti}
             options={options}
             placeholder={label}
+            styles={customStyles}
+            menuPortalTarget={document.body}
             classNamePrefix="react-select"
           />
         )}

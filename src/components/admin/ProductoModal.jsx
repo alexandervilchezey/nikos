@@ -112,25 +112,32 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
   }, [usuarioWatch]);
 
   const handleImagenChange = (e) => {
-    const file = e.target.files[0];
-    if (file && previewUrls.length < 9) {
-      const nuevaURL = URL.createObjectURL(file);
-      setImagenes([...imagenes, file]);
-      setPreviewUrls([...previewUrls, nuevaURL]);
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
 
-      const tallasDefault = Array.isArray(usuarioSeleccionado?.tallas)
-      ? usuarioSeleccionado.tallas.map(t => ({ talla: t, stock: 0 }))
+    const nuevosFiles = files.slice(0, 9 - previewUrls.length); // limita a 9 imágenes en total
+
+    const nuevasUrls = nuevosFiles.map((file) => URL.createObjectURL(file));
+    setImagenes((prev) => [...prev, ...nuevosFiles]);
+    setPreviewUrls((prev) => [...prev, ...nuevasUrls]);
+
+    const tallasDefault = Array.isArray(usuarioSeleccionado?.tallas)
+      ? usuarioSeleccionado.tallas.map((t) => ({ talla: t, stock: 0 }))
       : [];
-      setVariantes(prev => [...prev, {
-        imagenLocal: nuevaURL,
-        imagen: '',
-        color: '',
-        codigoColor: '',
-        tallas: tallasDefault
-      }]);
-    }
+
+    const nuevasVariantes = nuevasUrls.map((url) => ({
+      imagenLocal: url,
+      imagen: '',
+      color: '',
+      codigoColor: '',
+      tallas: [...tallasDefault],
+    }));
+
+    setVariantes((prev) => [...prev, ...nuevasVariantes]);
+
     e.target.value = '';
   };
+
 
   const eliminarVariante = (idx) => {
     setVariantes(prev => prev.filter((_, i) => i !== idx));
@@ -384,7 +391,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
             {previewUrls.length < 9 && (
               <label className="border-2 border-dashed w-full h-20 flex items-center justify-center rounded cursor-pointer">
                 <span className="text-gray-500">+</span>
-                <input type="file" accept="image/*" className="hidden" onChange={handleImagenChange} />
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handleImagenChange} />
               </label>
             )}
           </div>
@@ -412,7 +419,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
         ))}
       </div>
         </form>
-        <div className="sticky bottom-0 left-0 bg-white pt-4 mt-4 pb-2 border-t border-gray-200 flex justify-end gap-2 z-10">
+        <div className="sticky z-30 bottom-0 left-0 bg-white pt-4 mt-4 pb-2 border-t border-gray-200 flex justify-end gap-2 z-10">
           <button
             type="submit"
             form="form-producto"

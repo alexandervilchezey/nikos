@@ -341,7 +341,6 @@ nav.menu :where(.sub-mega){
 %cards-style{
   .wrapper{
     .dot-images{
-      position:relative;
       margin-bottom:15px;
       overflow: hidden;
       .thumbnail.hover{
@@ -349,7 +348,7 @@ nav.menu :where(.sub-mega){
         top: auto;
         left: 0;
         right: 0;
-        bottom: 0;
+        bottom: auto;
       }
       a{
         z-index: 1;

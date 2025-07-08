@@ -27,7 +27,10 @@ export default function FiltrosAdmin() {
   const cargarFiltros = async () => {
     const snapshot = await getDocs(collection(db, "filtros"));
     const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setFiltros(data);
+    const filtrosOrdenados = data.sort(
+      (a, b) => b.creadoEn?.toDate?.() - a.creadoEn?.toDate?.()
+    );
+    setFiltros(filtrosOrdenados);
   };
 
   useEffect(() => {

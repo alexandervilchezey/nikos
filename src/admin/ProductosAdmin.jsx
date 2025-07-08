@@ -62,7 +62,10 @@ export default function ProductosAdmin() {
         id: doc.id,
         ...doc.data()
       }));
-      setProductos(data);
+      const productosOrdenados = data.sort(
+        (a, b) => b.creadoEn?.toDate?.() - a.creadoEn?.toDate?.()
+      );
+      setProductos(productosOrdenados);
     };
     obtenerDatos();
   }, [isOpen]);
@@ -143,14 +146,11 @@ export default function ProductosAdmin() {
             fileName="catalogo-nikos.pdf"
           >
             {productosFiltrados.length > 0 && (
-              ({ loading }) => (
-                <button
-                  disabled={loading}
-                  className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {loading ? 'Cargando...' : 'Descargar Catálogo'}
-                </button>
-              )
+              <button
+                className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800`}
+              >
+                {'Descargar Catálogo'}
+              </button>
             )}
           </PDFDownloadLink>
         </div>

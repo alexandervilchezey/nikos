@@ -213,7 +213,7 @@ const PDFCatalog = ({ products, contacto }) => {
               <View
                 style={[
                   styles.productGrid,
-                  grupo.length < 6 && { justifyContent: 'center' },
+                  grupo.length < 6 && { justifyContent: 'left' },
                 ]}
               >
                 {grupo.map((item, i) => (

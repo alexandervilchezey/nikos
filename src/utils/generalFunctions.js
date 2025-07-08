@@ -13,16 +13,16 @@ export const obtenerNuevoNumeroOrden = async () => {
     });
     return ultimoNumero + 1;
   } else {
-    // Si no existe, crearlo
     await setDoc(docRef, { ultimoNumero: 1 });
     return 1;
   }
 };
 
-export const generarMensajeWhatsApp = (numeroOrden, data, carrito, total) => {
+export const generarMensajeWhatsApp = (numeroOrden, data, carrito, total, mayorista) => {
+  console.log("Datos del cliente:", carrito);
   const nombre = `${data.nombre} ${data.apellido}`;
   const productosTexto = carrito.map((item) => 
-    `• ${item.nombre} x${item.cantidad} – S/ ${item.precio * item.cantidad}`
+    `• ${item.nombre} ${item.color} ${item.talla} - S/${(mayorista ? item.precioMayorista : item.precioDescuento)} (x${item.cantidad}) – S/${(mayorista ? item.precioMayorista : item.precioDescuento) * item.cantidad}`
   ).join('\n');
 
   return `Hola! se envía la orden N°${String(numeroOrden).padStart(4, '0')} de ${nombre}

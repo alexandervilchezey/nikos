@@ -52,7 +52,7 @@ export default function ProductItem({ producto, onClose }) {
 
   return (
     <div className="item cursor-pointer" onClick={handleClick} aria-label={`Producto ${nombre}`}>
-      <div className="dot-images relative">
+      <div className="dot-images relative min-h-[355px] flex items-center">
         <div className="thumbnail">
           <img
             loading="lazy"

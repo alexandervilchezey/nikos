@@ -23,8 +23,21 @@ export default function UsuariosAdmin() {
       id: doc.id,
       ...doc.data(),
     }));
-    setUsuarios(data);
+
+    const uidActual = auth.currentUser?.uid;
+
+    const usuarioActual = data.find((u) => u.uid === uidActual);
+    const otrosUsuarios = data
+      .filter((u) => u.uid !== uidActual)
+      .sort((a, b) => b.creadoEn?.toDate?.() - a.creadoEn?.toDate?.());
+
+    const usuariosOrdenados = usuarioActual
+      ? [usuarioActual, ...otrosUsuarios]
+      : otrosUsuarios;
+
+    setUsuarios(usuariosOrdenados);
   };
+
 
   useEffect(() => {
     cargarUsuarios();
@@ -111,6 +124,7 @@ export default function UsuariosAdmin() {
           <thead className="bg-gray-100 text-gray-700">
             <tr>
               <th className="py-2 px-4 border">Nombre</th>
+              <th className="py-2 px-4 border">Email</th>
               <th className="py-2 px-4 border">Fecha Creado</th>
               <th className="py-2 px-4 border">Activo</th>
               <th className="py-2 px-4 border">Rol</th>
@@ -125,6 +139,9 @@ export default function UsuariosAdmin() {
   }`}>
       <td className="py-2 px-4 border">
         {usuario.nombre || "—"} {usuario.apellido || ""}
+      </td>
+      <td className="py-2 px-4 border">
+        {usuario.email || ""}
       </td>
       <td className="py-2 px-4 border">
         {usuario.creadoEn?.toDate
@@ -153,12 +170,14 @@ export default function UsuariosAdmin() {
     </button>
   ) : (
     <>
+    {usuario.uid !== auth.currentUser?.uid && (
       <button
         onClick={() => setModal({ tipo: "cambiarRol", usuario })}
         title="Cambiar rol"
       >
         <i className="bx bx-user-id-card text-blue-600 text-lg hover:scale-110 transition-transform"></i>
       </button>
+    )}
       <button
         onClick={() => setModal({ tipo: "cambiarMayorista", usuario })}
         title="Cambiar estado mayorista"

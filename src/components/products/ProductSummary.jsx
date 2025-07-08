@@ -44,6 +44,7 @@ export default function ProductSummary({ producto, varianteIndex, setVarianteInd
     const item = {
       slug: producto.slug,
       nombre: producto.nombre,
+      usuario: producto.usuario,
       imagen: variante.imagen,
       talla: tallaSelected,
       color: variante.color || '',

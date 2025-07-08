@@ -117,12 +117,13 @@ export default function CheckoutPage() {
         numeroOrden,
         cliente: data,
         estado: "pendiente",
+        mayorista: isMayorista,
         carrito,
         total,
         creadoEn: serverTimestamp(),
       });
 
-      const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total);
+      const mensaje = generarMensajeWhatsApp(numeroOrden, data, carrito, total, isMayorista);
       if (!numeroWhatsApp) {
         console.error("Número de WhatsApp no disponible.");
         setLoading(false);
