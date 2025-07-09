@@ -1,5 +1,8 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './components/auth/AuthProvider';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -12,9 +15,9 @@ import ResetPassword from './pages/ResetPassword';
 import EmailConfirmation from './pages/EmailConfirmation';
 import FirebaseRedirector from './firebase/FirebaseRedirector';
 import VerifyEmail from './pages/VerifyEmail';
-import ProtectedRoute from './components/auth/ProtectedRoute';
 import PerfilUsuario from './pages/PerfilUsuario';
 import ComprasUsuario from './pages/ComprasUsuario';
+
 import AdminLayout from './admin/AdminLayout';
 import ProductosAdmin from './admin/ProductosAdmin';
 import FiltrosAdmin from './admin/FiltrosAdmin';
@@ -22,54 +25,53 @@ import VentasAdmin from './admin/VentasAdmin';
 import UsuariosAdmin from './admin/UsuariosAdmin';
 import DashboardAdmin from './admin/DashboardAdmin';
 import ConfiguracionAdmin from './admin/ConfiguracionAdmin';
+
 function App() {
-
   return (
-    <div className="relative" style={{ minHeight: '100dvh' }}>
-      <Routes>
-        <Route path="/redirect" element={<FirebaseRedirector />} />
+    <AuthProvider>
+      <div className="relative" style={{ minHeight: '100dvh' }}>
+        <Routes>
+          <Route path="/redirect" element={<FirebaseRedirector />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/confirmar" element={<EmailConfirmation />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/reset" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/confirmar" element={<EmailConfirmation />} />
-
-        <Route path="/*" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="productos" element={<ProductosPage />} />
-          <Route path="productos/:slug" element={<Products />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route
-            path="mi-perfil"
-            element={
-              <ProtectedRoute>
+          <Route path="/*" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="productos" element={<ProductosPage />} />
+            <Route path="productos/:slug" element={<Products />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="mi-perfil" element={
+              <ProtectedRoute rolRequerido="cliente">
                 <PerfilUsuario />
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="mis-compras"
-            element={
-              <ProtectedRoute>
+            } />
+            <Route path="mis-compras" element={
+              <ProtectedRoute rolRequerido="cliente">
                 <ComprasUsuario />
               </ProtectedRoute>
-            }
-          />
-        </Route>
+            } />
+          </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<DashboardAdmin />} />
-          <Route path="productos" element={<ProductosAdmin />} />
-          <Route path="filtros" element={<FiltrosAdmin />} />
-          <Route path="ventas" element={<VentasAdmin />} />
-          <Route path="usuarios" element={<UsuariosAdmin />} />
-          <Route path="configuracion" element={<ConfiguracionAdmin />} />
-        </Route>
-          
-      </Routes>
-    </div>
+          {/* RUTAS DE ADMIN PROTEGIDAS POR ROL */}
+          <Route path="/admin" element={
+            <ProtectedRoute rolRequerido="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="dashboard" element={<DashboardAdmin />} />
+            <Route path="productos" element={<ProductosAdmin />} />
+            <Route path="filtros" element={<FiltrosAdmin />} />
+            <Route path="ventas" element={<VentasAdmin />} />
+            <Route path="usuarios" element={<UsuariosAdmin />} />
+            <Route path="configuracion" element={<ConfiguracionAdmin />} />
+          </Route>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 

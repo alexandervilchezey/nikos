@@ -1,11 +1,13 @@
-import { Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../firebase/firebase';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
-export default function ProtectedRoute({ children }) {
-  const [user, loading] = useAuthState(auth);
+export default function PrivateRoute({ children, rolRequerido }) {
+  const { usuario, cargando } = useAuth();
+  if (cargando) return <div className="p-6">Cargando...</div>;
 
-  if (loading) return <div className="text-center mt-10">Cargando...</div>;
+  if (!usuario || usuario.rol !== rolRequerido) {
+    return <Navigate to="/" replace />;
+  }
 
-  return user ? children : <Navigate to="/login" />;
+  return children;
 }

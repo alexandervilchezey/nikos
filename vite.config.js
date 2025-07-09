@@ -13,5 +13,16 @@ export default defineConfig({
     strictPort: true, // lanza error si el puerto está en uso
     cors: true, // habilita CORS
     allowedHosts: [], // permite conexiones desde dominios específicos
-  }
+  },
+  define: {
+    global: {}, // Necesario para que Buffer funcione
+  },
+  optimizeDeps: {
+    include: ['buffer'],
+  },
+  resolve: {
+    alias: {
+      buffer: 'buffer/',
+    },
+  },
 })

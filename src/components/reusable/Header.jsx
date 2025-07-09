@@ -18,7 +18,7 @@ export default function Header() {
 
     const obtenerProductos = async () => {
       try {
-        const q = query(collection(db, "productos"), limit(20)); // <-- Evita cargar demasiado
+        const q = query(collection(db, "productos"), limit(20));
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map(doc => ({
           id: doc.id,

@@ -113,6 +113,7 @@ export default function VentasAdmin() {
               <th className="py-2 px-4 border">Cliente</th>
               <th className="py-2 px-4 border">Total</th>
               <th className="py-2 px-4 border">Estado</th>
+              <th className="py-2 px-4 border">Compra Mayorista</th>
               <th className="py-2 px-4 border">Fecha realizada</th>
               <th className="py-2 px-4 border">Acciones</th>
             </tr>
@@ -128,6 +129,7 @@ export default function VentasAdmin() {
                 </td>
                 <td className="py-2 px-4 border">S/ {orden.total.toFixed(2)}</td>
                 <td className="py-2 px-4 border capitalize">{orden.estado}</td>
+                <td className="py-2 px-4 border capitalize">{orden.mayorista ? 'Sí': 'No'}</td>
                 <td className="py-2 px-4 border text-center">
                   {orden.creadoEn?.toDate
                     ? orden.creadoEn.toDate().toLocaleString("es-PE", {
@@ -201,6 +203,7 @@ export default function VentasAdmin() {
                   <th>Talla</th>
                   <th>Color</th>
                   <th>Cant</th>
+                  <th>Precio</th>
                   <th>Subtotal</th>
                 </tr>
               </thead>
@@ -210,9 +213,10 @@ export default function VentasAdmin() {
                     <td className="py-1">{item.nombre}</td>
                     <td className="py-1">{item.talla}</td>
                     <td className="py-1">{item.color}</td>
-                    <td className="py-1 text-center">{item.cantidad}</td>
-                    <td className="py-1 text-right">
-                      S/ {(item.precio * item.cantidad).toFixed(2)}
+                    <td className="py-1">{item.cantidad}</td>
+                    <td className="py-1">S/{modalDetalle.mayorista ? item.precioMayorista : item.precioDescuento || item.precio}</td>
+                    <td className="py-1">
+                      S/{((modalDetalle.mayorista ? item.precioMayorista : item.precioDescuento || item.precio) * item.cantidad).toFixed(2)}
                     </td>
                   </tr>
                 ))}

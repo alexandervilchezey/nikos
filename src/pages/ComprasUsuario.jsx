@@ -47,7 +47,7 @@ export default function ComprasUsuario() {
   const totalPaginas = Math.ceil(compras.length / comprasPorPagina);
 
   if (loading) return <p className="text-center mt-10">Cargando tus compras...</p>;
-  if (compras.length === 0) return <p className="text-center mt-10">No tienes compras registradas.</p>;
+  if (compras.length === 0) return <p className="text-center mt-10 min-h-[300px]">No tienes compras registradas.</p>;
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4">
@@ -110,32 +110,35 @@ export default function ComprasUsuario() {
               ×
             </button>
             <h3 className="text-xl font-semibold mb-4">Detalle de productos</h3>
-            <table className="min-w-full border">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4 border">Producto</th>
-                  <th className="py-2 px-4 border">Cantidad</th>
-                  <th className="py-2 px-4 border">Color</th>
-                  <th className="py-2 px-4 border">Talla</th>
+            <table className="w-full text-sm mb-4">
+              <thead>
+                <tr className="text-left border-b">
+                  <th>Producto</th>
+                  <th>Talla</th>
+                  <th>Color</th>
+                  <th>Cant</th>
+                  <th>Precio</th>
+                  <th>Subtotal</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedCompra.carrito.map((item, idx) => (
-                  <tr key={idx} className="border-t">
-                    <td className="py-2 px-4 border">{item.nombre}</td>
-                    <td className="py-2 px-4 border">{item.cantidad}</td>
-                    <td className="py-2 px-4 border">
-                      {item.color ? (
-                        <div className="w-4 h-4 rounded-full mx-auto" style={{ backgroundColor: item.color }}></div>
-                      ) : (
-                        'N/A'
-                      )}
+                  <tr key={idx} className="border-b">
+                    <td className="py-1">{item.nombre}</td>
+                    <td className="py-1">{item.talla}</td>
+                    <td className="py-1">{item.color}</td>
+                    <td className="py-1">{item.cantidad}</td>
+                    <td className="py-1">S/{selectedCompra.mayorista ? item.precioMayorista : item.precioDescuento || item.precio}</td>
+                    <td className="py-1">
+                      S/{((selectedCompra.mayorista ? item.precioMayorista : item.precioDescuento || item.precio) * item.cantidad).toFixed(2)}
                     </td>
-                    <td className="py-2 px-4 border">{item.talla || 'N/A'}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className="text-right font-semibold text-lg">
+              Total: S/ {selectedCompra.total.toFixed(2)}
+            </div>
           </div>
         </div>
       )}

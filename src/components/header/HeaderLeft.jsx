@@ -1,4 +1,5 @@
 import { useAuth } from "../../hooks/useAuth";
+import HeaderUserMenu from "./HeaderMenu";
 
 export default function HeaderLeft({ setIsMobileMenuOpen }) {
   const { user } = useAuth();
@@ -11,7 +12,15 @@ export default function HeaderLeft({ setIsMobileMenuOpen }) {
       </div>
       <div className="hidden md992:block list-inline">
         <ul className="list-none">
-          <li className={user? "w-[280px]" : 'w-[170px]'}></li>
+          <li className="hidden md992:flex">
+            {user ? (
+              <HeaderUserMenu />
+            ) : (
+              <a href="/login">
+                <i className='cursor-pointer bx bx-user'></i>
+              </a>
+            )}
+          </li>
         </ul>
       </div>
     </div>

@@ -21,7 +21,6 @@ export default function AdminLayout() {
       await signOut(auth);
 
       localStorage.removeItem("usuario");
-      sessionStorage.removeItem("usuario");
       navigate('/login');
     } catch (error) {
       console.error("Error al cerrar sesión:", error);

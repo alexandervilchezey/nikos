@@ -8,6 +8,8 @@ import {
   Svg,
   Path,
 } from '@react-pdf/renderer';
+import { Buffer } from 'buffer';
+if (!window.Buffer) window.Buffer = Buffer;
 
 const styles = StyleSheet.create({
   page: {
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: '100%',
-    height: 140,
+    height: 120,
     objectFit: 'contain',
     marginBottom: 4,
     alignSelf: 'center',
@@ -218,7 +220,7 @@ const PDFCatalog = ({ products, contacto }) => {
               >
                 {grupo.map((item, i) => (
                   <View style={styles.productCard} key={i}>
-                    <Image src={item.imagen} style={styles.productImage} />
+                    <Image src={item.imagen} style={styles.productImage} wrap={false} />
                     <View style={styles.productInfo}>
                       <Text style={{ fontWeight: 'bold' }}>{item.nombre}</Text>
                       <Text>COLOR: {item.color}</Text>

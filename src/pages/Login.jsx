@@ -45,7 +45,6 @@ export default function Login() {
 
       // Limpia antes de guardar
       localStorage.removeItem('usuario');
-      sessionStorage.removeItem('usuario');
 
       // Guarda solo lo esencial
       const sessionData = JSON.stringify({
@@ -58,7 +57,6 @@ export default function Login() {
         localStorage.setItem('usuario', sessionData);
       } else {
         localStorage.setItem('usuario', sessionData);
-        sessionStorage.setItem('usuario', sessionData);
       }
 
       if (rol === 'admin') {

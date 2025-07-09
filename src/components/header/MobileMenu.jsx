@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import ModalFiltros from "../reusable/ModalFiltros";
 import { auth } from "../../firebase/firebase";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from '../auth/AuthProvider';
 
 export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [animatingClose, setAnimatingClose] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { usuario } = useAuth();
   const navigate = useNavigate();
 
   const cerrarModalConAnimacion = () => {
@@ -22,9 +22,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-
       localStorage.removeItem("usuario");
-      sessionStorage.removeItem("usuario");
       navigate('/login');
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
@@ -68,7 +66,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
         </nav>
 
         {/* Login/Register para visitantes */}
-        {!user && (
+        {!usuario && (
           <div className="mt-auto p-4 flex flex-col space-y-2 gap-2">
             <a href="/login" className="btn secondary-btn text-center bg-black text-white py-2 rounded">Iniciar Sesión</a>
             <a href="/register" className="btn primary-btn text-center border border-black py-2 text-black rounded">Registrarse</a>
@@ -76,14 +74,14 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
         )}
 
         {/* Menú de usuario */}
-        {user && (
+        {usuario && (
           <div className="mt-auto border-t border-gray-200 px-4 pt-4">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="w-full flex justify-between items-center text-black font-medium text-left truncate"
             >
-              <span className="truncate max-w-[80%]" title={user.displayName || user.email}>
-                Hola, {user.displayName || user.email}
+              <span className="truncate max-w-[80%]" title={usuario.nombre + ' ' + usuario.apellido || usuario.email}>
+                Hola, {usuario.nombre + ' ' + usuario.apellido || usuario.email}
               </span>
               <svg
                 className={`w-4 h-4 transition-transform duration-300 ${isUserMenuOpen ? "rotate-180" : "rotate-0"}`}
@@ -102,6 +100,17 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
               }`}
             >
               <li>
+                {usuario.rol === 'admin' && (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      navigate('/admin/dashboard');
+                    }}
+                    className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
+                  >
+                    Panel de administración
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     navigate("/mi-perfil");

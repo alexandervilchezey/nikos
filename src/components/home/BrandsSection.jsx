@@ -28,9 +28,9 @@ export default function BrandsSection({ marcas = [] }) {
       <div className="wrap">
         <div className="dotgrid">
           <div id="scrolling-container" className="wrapper overflow-x-auto whitespace-nowrap max-w-full">
-            <div className="flex gap-2 py-2">
+            <div className="flex gap-2 py-2 items-center justify-center">
               {marcas.map((marca, i) => (
-                <>
+                <div key={i + 'a'}>
                 {marca.imagen && (
                   <div
                     key={i}
@@ -38,6 +38,7 @@ export default function BrandsSection({ marcas = [] }) {
                   >
                     
                       <img
+                        key={i + 'b'}
                         alt={marca.nombre}
                         loading='lazy'
                         src={optimizarImagenCloudinary(marca.imagen)}
@@ -45,7 +46,7 @@ export default function BrandsSection({ marcas = [] }) {
                       />
                   </div>
                 )}
-                </>
+                </div>
               ))}
             </div>
           </div>

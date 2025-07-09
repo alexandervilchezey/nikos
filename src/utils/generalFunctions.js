@@ -19,7 +19,6 @@ export const obtenerNuevoNumeroOrden = async () => {
 };
 
 export const generarMensajeWhatsApp = (numeroOrden, data, carrito, total, mayorista) => {
-  console.log("Datos del cliente:", carrito);
   const nombre = `${data.nombre} ${data.apellido}`;
   const productosTexto = carrito.map((item) => 
     `• ${item.nombre} ${item.color} ${item.talla} - S/${(mayorista ? item.precioMayorista : item.precioDescuento)} (x${item.cantidad}) – S/${(mayorista ? item.precioMayorista : item.precioDescuento) * item.cantidad}`

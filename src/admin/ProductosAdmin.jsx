@@ -24,6 +24,7 @@ export default function ProductosAdmin() {
   const [productoEdit, setProductoEdit] = useState(null);
   const [modalEliminar, setModalEliminar] = useState(false);
   const [disponibles, setDisponibles] = useState({});
+  const [pdfReady, setPdfReady] = useState(false);
 
   const [contacto, setContacto] = useState({
     email: '',
@@ -136,23 +137,31 @@ export default function ProductosAdmin() {
           >
             + Nuevo Producto
           </button>
-          <PDFDownloadLink
-            document={
-              <PDFCatalog
-                products={productosFiltrados}
-                contacto={contacto}
-              />
-            }
-            fileName="catalogo-nikos.pdf"
-          >
-            {productosFiltrados.length > 0 && (
-              <button
-                className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800`}
-              >
-                {'Descargar Catálogo'}
-              </button>
-            )}
-          </PDFDownloadLink>
+          {productosFiltrados.length > 0 && (
+            <PDFDownloadLink
+              document={<PDFCatalog products={productosFiltrados} contacto={contacto} />}
+              fileName="catalogo-nikos.pdf"
+            >
+              {({ loading }) => {
+                if (!loading && !pdfReady) {
+                  setTimeout(() => setPdfReady(true), 2000);
+                }
+
+                return !pdfReady || loading ? (
+                  <button
+                    disabled
+                    className="bg-gray-400 text-white px-4 py-2 rounded"
+                  >
+                    Preparando catálogo...
+                  </button>
+                ) : (
+                  <button className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+                    Descargar Catálogo
+                  </button>
+                );
+              }}
+            </PDFDownloadLink>
+          )}
         </div>
       </div>
 
