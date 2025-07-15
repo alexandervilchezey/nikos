@@ -5,13 +5,16 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  getDoc
+  query,
+  orderBy
 } from 'firebase/firestore';
 
 import ProductoModal from '../components/admin/ProductoModal';
 import Modal from '../components/reusable/Modal';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PDFCatalog from '../components/admin/PDFCatalog';
+import BotonCatalogo from '../components/admin/BotonCatalogo';
+
 
 export default function ProductosAdmin() {
   const [productos, setProductos] = useState([]);
@@ -24,14 +27,6 @@ export default function ProductosAdmin() {
   const [productoEdit, setProductoEdit] = useState(null);
   const [modalEliminar, setModalEliminar] = useState(false);
   const [disponibles, setDisponibles] = useState({});
-  const [pdfReady, setPdfReady] = useState(false);
-
-  const [contacto, setContacto] = useState({
-    email: '',
-    telefono: '',
-    web: '',
-    horario: ''
-  });
 
   const abrirNuevo = () => {
     setProductoEdit(null);
@@ -55,23 +50,19 @@ export default function ProductosAdmin() {
     setModalEliminar(false);
   };
 
-  // Productos
   useEffect(() => {
     const obtenerDatos = async () => {
-      const querySnapshot = await getDocs(collection(db, 'productos'));
+      const q = query(collection(db, 'productos'), orderBy('creadoEn', 'desc'));
+      const querySnapshot = await getDocs(q);
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data()
       }));
-      const productosOrdenados = data.sort(
-        (a, b) => b.creadoEn?.toDate?.() - a.creadoEn?.toDate?.()
-      );
-      setProductos(productosOrdenados);
+      setProductos(data);
     };
     obtenerDatos();
   }, [isOpen]);
 
-  // Filtros
   useEffect(() => {
     const obtenerFiltros = async () => {
       const querySnapshot = await getDocs(collection(db, 'filtros'));
@@ -92,20 +83,6 @@ export default function ProductosAdmin() {
     obtenerFiltros();
   }, []);
 
-  // Footer config
-  useEffect(() => {
-    const obtenerContactoDesdeConfig = async () => {
-      const docRef = doc(db, 'config', 'datosFooter');
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setContacto(data);
-      }
-    };
-
-    obtenerContactoDesdeConfig();
-  }, []);
 
   const filtrarYOrdenar = () => {
     let filtrados = productos.filter((p) =>
@@ -137,35 +114,11 @@ export default function ProductosAdmin() {
           >
             + Nuevo Producto
           </button>
-          {productosFiltrados.length > 0 && (
-            <PDFDownloadLink
-              document={<PDFCatalog products={productosFiltrados} contacto={contacto} />}
-              fileName="catalogo-nikos.pdf"
-            >
-              {({ loading }) => {
-                if (!loading && !pdfReady) {
-                  setTimeout(() => setPdfReady(true), 2000);
-                }
 
-                return !pdfReady || loading ? (
-                  <button
-                    disabled
-                    className="bg-gray-400 text-white px-4 py-2 rounded"
-                  >
-                    Preparando catálogo...
-                  </button>
-                ) : (
-                  <button className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-                    Descargar Catálogo
-                  </button>
-                );
-              }}
-            </PDFDownloadLink>
-          )}
+          <BotonCatalogo />
         </div>
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-4">
         <input
           type="text"
@@ -184,7 +137,6 @@ export default function ProductosAdmin() {
         </select>
       </div>
 
-      {/* Tabla */}
       <div className="overflow-x-auto">
         <table className="min-w-full border text-sm">
           <thead className="bg-gray-100 text-gray-700">
@@ -230,7 +182,6 @@ export default function ProductosAdmin() {
           </tbody>
         </table>
 
-        {/* Paginación */}
         <div className="flex justify-between items-center mt-4 text-sm">
           <button
             onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
@@ -243,7 +194,9 @@ export default function ProductosAdmin() {
             Página {paginaActual} de {totalPaginas}
           </span>
           <button
-            onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
+            onClick={() =>
+              setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))
+            }
             disabled={paginaActual === totalPaginas}
             className="px-4 py-2 bg-black text-white rounded disabled:opacity-30"
           >
@@ -252,7 +205,6 @@ export default function ProductosAdmin() {
         </div>
       </div>
 
-      {/* Modal Producto */}
       <ProductoModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -260,12 +212,12 @@ export default function ProductosAdmin() {
         disponibles={disponibles}
       />
 
-      {/* Modal Eliminar */}
       <Modal isOpen={modalEliminar} onClose={() => setModalEliminar(false)}>
         <div className="w-full max-w-md relative">
           <h2 className="text-xl font-semibold mb-2">Eliminar producto</h2>
           <p className="mb-4">
-            ¿Estás seguro que deseas eliminar el producto "{productoEdit?.nombre || ''}"?
+            ¿Estás seguro que deseas eliminar el producto "
+            {productoEdit?.nombre || ''}"?
           </p>
           <div className="flex justify-end gap-2">
             <button

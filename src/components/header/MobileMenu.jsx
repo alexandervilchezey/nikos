@@ -39,7 +39,7 @@ export default function MobileMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
         <nav className="wrapper">
           <ul className="pt-2 space-y-2">
             <li>
-              <a className="block px-4 text-black" href="">Inicio</a>
+              <a className="block px-4 text-black" href="/">Inicio</a>
             </li>
             <li>
               <a className="block px-4 text-black" href="/productos">Productos</a>
