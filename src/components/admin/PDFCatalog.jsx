@@ -169,7 +169,7 @@ const PDFCatalog = ({ products, contacto }) => {
         style={{ padding: 0, margin: 0, position: 'relative' }}
       >
         <Image
-          src="https://res.cloudinary.com/ddebdvfcg/image/upload/v1751581124/catalogo_nikos_2_c3pwan.png"
+          src="https://res.cloudinary.com/dupt8yhmn/image/upload/v1751581124/catalogo_nikos_2_c3pwan.png"
           style={{
             position: 'absolute',
             top: 0,

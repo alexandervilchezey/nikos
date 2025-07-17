@@ -8,10 +8,9 @@ import { useRef, useState } from 'react';
 
 export default function ProductsCarousel({ productos }) {
   const productosDestacados = productos
-    .filter((producto) => producto.creadoEn)
-    .sort((a, b) => new Date(b.creadoEn) - new Date(a.creadoEn))
-    .slice(0, 8);
-
+  .filter((producto) => producto.creadoEn && producto.creadoEn.toDate)
+  .sort((a, b) => b.creadoEn.toDate().getTime() - a.creadoEn.toDate().getTime())
+  .slice(0, 8);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);

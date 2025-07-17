@@ -22,7 +22,7 @@ export default function FiltrosAdmin() {
   const [paginaActual, setPaginaActual] = useState(1);
   const filtrosPorPagina = 6;
 
-  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/ddebdvfcg/upload";
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dupt8yhmn/upload";
 
   const cargarFiltros = async () => {
     const snapshot = await getDocs(collection(db, "filtros"));

@@ -91,7 +91,7 @@ export default function VentasAdmin() {
         >
           <option value="">Todos los estados</option>
           <option value="pendiente">Pendiente</option>
-          <option value="cancelado">Cancelado</option>
+          <option value="Pagado">Pagado</option>
           <option value="anulado">Anulado</option>
         </select>
       </div>

@@ -168,7 +168,7 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
   };
 
   const subirImagenACloudinary = async (file) => {
-    const url = 'https://api.cloudinary.com/v1_1/ddebdvfcg/upload';
+    const url = 'https://api.cloudinary.com/v1_1/dupt8yhmn/upload';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'nikosperu_preset');
@@ -336,14 +336,14 @@ export default function ProductoModal({ isOpen, onClose, editarProducto, disponi
               {errors.precio && <p className="text-red-500 text-sm">{errors.precio.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Precio Mayorista</label>
-              <input type="number" {...register('precioMayorista', { required: 'Precio requerido' })} className="w-full border px-3 py-2 rounded" />
-              {errors.precioMayorista && <p className="text-red-500 text-sm">{errors.precioMayorista.message}</p>}
-            </div>
-            <div>
               <label className="block text-sm font-medium">Precio con descuento</label>
               <input type="number" {...register('precioDescuento', { required: 'Precio requerido' })} className="w-full border px-3 py-2 rounded" />
               {errors.precioDescuento && <p className="text-red-500 text-sm">{errors.precioDescuento.message}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Precio Mayorista</label>
+              <input type="number" {...register('precioMayorista', { required: 'Precio requerido' })} className="w-full border px-3 py-2 rounded" />
+              {errors.precioMayorista && <p className="text-red-500 text-sm">{errors.precioMayorista.message}</p>}
             </div>
           </div>
             <div>
